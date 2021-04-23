@@ -1,0 +1,13 @@
+.el-breadcrumb
+{
+    margin-left: 5px;
+    margin-bottom: 20px;
+}
+.btn-custom-cancel {
+    float: right;
+    margin-left: 10px;
+}
+.el-input.is-disabled .el-input__inner {
+    color: black;
+    cursor: default;
+}

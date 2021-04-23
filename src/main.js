@@ -2,5 +2,17 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from './plugins/axios'
+import ElementPlus from 'element-plus';
+import locale from 'element-plus/lib/locale/lang/en'
+import 'element-plus/lib/theme-chalk/index.css';
+import './assets/fonts/iconfont.css'
+import "./assets/css/global.css"
 
-createApp(App).use(store).use(router).mount('#app')
+
+//Load the root component
+const app = createApp(App);
+app.use(store).use(router);
+app.use(ElementPlus,{locale});
+app.config.globalProperties.$axios=axios;//配置全局属性
+app.mount('#app');
