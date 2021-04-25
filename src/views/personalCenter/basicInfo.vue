@@ -8,7 +8,7 @@
   </el-breadcrumb>
   <el-card>
     <h3>User Info</h3>
-    <div style="margin-top: 20px;min-width: 500px; max-width: 700px;text-align: center; margin: 0 auto">
+    <div class="form_center_layout">
       <el-form :model="readableUserInfo" label-width="130px" disabled>
         <el-form-item label="Username" prop="username">
           <el-input v-model="readableUserInfo.username"></el-input>
@@ -63,11 +63,11 @@ export default {
 .el-card {
   min-height: 630px;
 }
-.disabledClass /deep/.el-input__inner
+.disabledClass :deep(.el-input__inner)
 {
   color:red!important;
 }
-.enabledClass /deep/.el-input__inner
+.enabledClass :deep(.el-input__inner)
 {
   color:blue!important;
 }

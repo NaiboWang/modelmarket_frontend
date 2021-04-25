@@ -139,12 +139,8 @@ export default {
   font-size: 13px;
   margin: 10px 15px;
 }
-////通过以下方式进行属性调整
-///deep/.el-input__inner
-//{
-//  padding-left: 15px!important;
-//}
-/deep/.el-form-item__error
+
+:deep(.el-form-item__error)
 {
   margin-left: 30px;
 }

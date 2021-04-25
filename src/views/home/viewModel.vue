@@ -1,40 +1,59 @@
 <template>
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{ path: '/' }">Model List</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/' }">Home Page</el-breadcrumb-item>
     <el-breadcrumb-item>Model Details</el-breadcrumb-item>
   </el-breadcrumb>
 
   <el-card>
-    <h2>Model Details</h2>
+
 
     <el-row>
       <el-col :span="6"></el-col>
       <el-col :span="12" style="text-align: left">
+        <h2 style="text-align: center">Model Details</h2>
         <table style="margin:0 auto">
           <tr>
-            <td width="200px" style="text-align: right">Model Name：</td>
+            <td style="text-align: right">Model Name:</td>
             <td>{{ modelInfo["modelName"] }}</td>
           </tr>
           <tr>
-            <td width="200px" style="text-align: right">Model Author：</td>
+            <td style="text-align: right">Model Author:</td>
             <td>{{ modelInfo["author"] }}</td>
           </tr>
           <tr>
-            <td width="200px" style="text-align: right">Model Framework：</td>
+            <td style="text-align: right">Model Framework:</td>
             <td>{{ modelInfo["modelFramework"] }}</td>
           </tr>
           <tr>
-            <td width="200px" style="text-align: right">Model Description：</td>
+            <td style="text-align: right">Model Description:</td>
             <td style="word-wrap: break-word;word-break: break-all;overflow: hidden;max-height: 100px;">
               {{ modelInfo["modelDescription"] }}
             </td>
           </tr>
           <tr>
-            <td width="200px" style="text-align: right">Model File Name：</td>
-            <td>{{ modelInfo["filename"] }}</td>
+            <td style="text-align: right">Tags:</td>
+            <td style="word-wrap: break-word;word-break: break-all;overflow: hidden;max-height: 100px;">
+              <el-tag
+                  v-for="(item, i) in modelInfo['tags']"
+                  :key="i"
+              >{{ item }}
+              </el-tag>
+            </td>
+          </tr>
+          <!--          <tr>-->
+          <!--            <td width="200px" style="text-align: right">Model File Name:</td>-->
+          <!--            <td>{{ modelInfo["filename"] }}</td>-->
+          <!--          </tr>-->
+          <tr>
+            <td style="text-align: right">Update Time:</td>
+            <td>{{ modelInfo["updated_time"] }}</td>
           </tr>
           <tr>
-            <td width="200px" style="text-align: right">Model Price:</td>
+            <td style="text-align: right">Create Time:</td>
+            <td>{{ modelInfo["created_time"] }}</td>
+          </tr>
+          <tr>
+            <td style="text-align: right">Model Price:</td>
             <td style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</td>
           </tr>
         </table>
@@ -44,9 +63,10 @@
           </el-button>
         </div>
       </el-col>
+      <el-col :span="6"></el-col>
     </el-row>
   </el-card>
-  <el-dialog title="Buy Model" v-model="dialogFormVisible">
+  <el-dialog title="Buy Model" v-model="dialogFormVisible" @open="getUserInfo">
     <el-form :model="form">
       <el-form-item label="Model Name">
         <el-input v-model="modelInfo.modelName" autocomplete="off" disabled style="color:black"></el-input>
@@ -82,11 +102,16 @@ export default {
         }
       });
       this.modelInfo = modelInfo.data;
-      let userInfo = await this.$axios.get("getUserInfo");
-      this.userInfo = userInfo.data;
       //Show the purchase dialogue
-      if (this.$route.query["buy"]) {
+      if (this.$route.query["buy"] == "true") {
         this.dialogFormVisible = true;
+      }
+    },
+    getUserInfo: async function () {
+      let userInfo = await this.$axios.get("getUserInfo");
+      //注意这里，前端代码里不能有值读取不了的情况，否则整个系统都会崩掉！
+      if (userInfo) {
+        this.userInfo = userInfo.data;
       }
     },
     buyModel: async function () {
@@ -114,10 +139,12 @@ export default {
     return {
       modelInfo: {},
       dialogFormVisible: false,
-      userInfo:{},
+      userInfo: {
+        "deposit": 0,
+      },
       form: {
         id: 0,
-        price:0,
+        price: 0,
       }
     };
   },
@@ -125,5 +152,8 @@ export default {
 </script>
 
 <style scoped>
-
+td {
+  padding-top: 10px;
+  padding-left: 5px;
+}
 </style>

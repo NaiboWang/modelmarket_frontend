@@ -54,7 +54,7 @@ service.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-// respone 响应拦截器
+// response 响应拦截器
 service.interceptors.response.use(
     response => {
         NProgress.done();

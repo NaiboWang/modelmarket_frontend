@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import { ElMessage } from "element-plus";
 
 export default createStore({
   state: {
@@ -17,7 +18,7 @@ export default createStore({
       '43': 'el-icon-wallet',
       '102': 'iconfont icon-danju',
       '145': 'iconfont icon-baobiao'
-    }
+    },
   },
   mutations: {
     setBackRef (state, address) {
@@ -28,10 +29,10 @@ export default createStore({
     },
     setActiveManagementPath(state, path){
       state.activeManagementPath = path;
-    }
+    },
   },
   actions: {
   },
   modules: {
-  }
+  },
 })

@@ -7,7 +7,7 @@
   </el-breadcrumb>
   <el-card>
     <h3>Charge</h3>
-    <div style="margin-top: 20px;min-width: 500px; max-width: 700px;text-align: center; margin: 0 auto">
+    <div class="form_center_layout">
       <el-form :model="userInfo" ref="userInfoFormRef"
                :rules="userInfoFormRules" label-width="170px">
         <el-form-item label="Username" prop="username">
@@ -91,15 +91,4 @@ export default {
 </script>
 
 <style scoped>
-.el-card {
-  min-height: 630px;
-}
-
-.disabledClass /deep/ .el-input__inner {
-  color: red !important;
-}
-
-.enabledClass /deep/ .el-input__inner {
-  color: blue !important;
-}
 </style>

@@ -13,9 +13,8 @@
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside :width="isCollapse ? '64px' : '220px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
-        <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" router :default-active="$route.path"
+      <el-aside width="220px">
+        <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" router :default-active="activePath"
                  background-color="#333744" text-color="#fff" active-text-color="#409FFF">
           <!-- :unique-opened="true"->只允许展开一个菜单 -->
           <!-- :collapse-transition="false" -> 关闭动画 -->
@@ -68,7 +67,7 @@ export default {
       // 左侧菜单数据
       menuList: [{
         id: 1,
-        path: "/personalModelManagement",
+        path: "/managementModels",
         authName: "Model Management",
       }, {
         id: 2,
@@ -106,6 +105,7 @@ export default {
   methods: {
     logout: async function () {
       await this.$axios.get("logout");
+      this.waitingList.clear();
       this.$router.push("/");
     },
     getIdentity: async function () {
@@ -116,9 +116,29 @@ export default {
       }
       this.userInfo = userInfo;
     },
-    // 菜单的折叠与展开
-    toggleCollapse() {
-      this.isCollapse = !this.isCollapse
+  },
+  computed:{
+    paths() {
+      let paths = [];
+      for(let item of this.menuList){
+        if("path" in item)
+        {
+          paths.push(item["path"]);
+        }
+        if("children" in item){
+          for(let it of item["children"]){
+            paths.push(it["path"]);
+          }
+        }
+      }
+      return paths;
+    },
+    activePath(){
+      if(this.paths.includes(this.$route.path)){
+        return this.$route.path;
+      }else{
+        return this.$store.state.activeManagementPath;
+      }
     },
   }
 }

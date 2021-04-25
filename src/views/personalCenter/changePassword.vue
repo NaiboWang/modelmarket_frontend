@@ -9,7 +9,7 @@
   <el-card>
     <h3>Change Password</h3>
     <!-- 改密码表单 -->
-    <div style="margin-top: 20px;min-width: 500px; max-width: 700px;text-align: center; margin: 0 auto">
+    <div class="form_center_layout">
       <el-form
           ref="changePasswordFormRef"
           :model="changePasswordForm"

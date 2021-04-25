@@ -10,6 +10,8 @@ import changePassword from "@/views/personalCenter/changePassword";
 import basicInfo from "@/views/personalCenter/basicInfo";
 import managementHome from "@/views/management_center/managementHome";
 import charge from "@/views/personalCenter/charge";
+import modelManagement from "@/views/personalCenter/modelManagement";
+import viewOrder from "@/views/personalCenter/viewOrder";
 
 const routes = [
   {
@@ -42,7 +44,11 @@ const routes = [
     redirect: '/personalModelManagement',
     children: [
       { path: '/personalModelManagement', component: personalModelManagement },
+      { path: '/manageModel/:id', component: modelManagement },
       { path: '/personalOrders', component: personalOrders },
+      { path: '/soldOrders', component: personalOrders },
+      { path: '/viewOrder/:id', component: viewOrder },
+      { path: '/viewSoldOrder/:id', component: viewOrder },
       { path: '/modelEnsemble', component: modelEnsemble },
       { path: '/changePassword', component: changePassword },
       { path: '/basicInfo', component: basicInfo },
@@ -55,6 +61,7 @@ const routes = [
     component: managementHome,
     redirect: '/managementInfo',
     children: [
+      { path: '/managementModels', component: personalModelManagement},
       { path: '/managementPassword', component: changePassword },
       { path: '/managementInfo', component: basicInfo },
     ]

@@ -4,9 +4,22 @@
   </el-breadcrumb>
   <el-card>
     <h2>Welcome to Machine Learning Model Market!</h2>
-    <el-row>
-      <el-col :span="8" style="margin:0 auto">
-        <el-input v-model="queryInfo.query" @keyup.enter="getModels" placeholder="Please input model name to search">
+    <el-row class="center_layout">
+      <el-col :span="6" style="margin-right:10px">
+        <el-select style="width: 100%" v-model="queryInfo.fields" @change="detectChange" multiple
+                   placeholder="Please choose query fields">
+          <el-option
+              v-for="item in queryFields"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+      </el-col>
+
+      <el-col :span="10">
+        <el-input v-model="queryInfo.query" @keyup.enter="getModels" placeholder="please input keywords to search"
+                  clearable>
           <template #append>
             <el-button @click="getModels" icon="el-icon-search"></el-button>
           </template>
@@ -14,23 +27,35 @@
       </el-col>
     </el-row>
     <!-- 表格数据 -->
-    <el-table ref="tableRef" :data="models" border stripe style="min-width: 500px; max-width: 1200px;text-align: center; margin: 0 auto; margin-top:10px;
-  margin-bottom:10px;">
+    <el-table ref="tableRef" :data="models" @sort-change="sortData" border stripe class="center_layout">
       <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>
-      <el-table-column header-align="center" align="center" label="Name" prop="modelName"></el-table-column>
-      <el-table-column header-align="center" align="center" label="Author" prop="author"></el-table-column>
-      <el-table-column header-align="center" align="center" label="FrameWork" prop="modelFramework"
-                       width="150px"></el-table-column>
+      <el-table-column :sortable="'custom'" header-align="center" align="center" label="Name"
+                       prop="modelName"></el-table-column>
+      <el-table-column :sortable="'custom'" header-align="center" align="center" label="Author"
+                       prop="author"></el-table-column>
+      <el-table-column :sortable="'custom'" header-align="center" align="center" label="FrameWork" prop="modelFramework"
+                       width="130px"></el-table-column>
+      <el-table-column :sortable="'custom'" header-align="center" align="center" label="Update Time" prop="updated_time"
+                       width="160px"></el-table-column>
+      <el-table-column header-align="center" align="center" label="Tags">
+        <template v-slot="scope">
+          <el-tag
+              v-for="(item, i) in scope.row.tags"
+              :key="i"
+          >{{ item }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column header-align="center" align="center" label="Operations" width="280px">
         <template v-slot="scope">
           <el-button type="primary" icon="el-icon-view" size="medium"
-                     @click="$router.push(`/viewModel/${scope.row.id}`)">View
+                     @click="viewModel(`${scope.row.id}`)">View
           </el-button>
           <el-button
               type="warning"
               icon="el-icon-shopping-cart-2"
               size="medium"
-              @click="$router.push(`/viewModel/${scope.row.id}?buy=true`)"
+              @click="viewModel(`${scope.row.id}`,true)"
           >Buy
           </el-button>
 
@@ -62,14 +87,57 @@ export default {
       models: [],
       queryInfo: {
         query: '',
+        fields: ["modelName"],
         pageNum: 1,
         pageSize: 10,
+        sortProp: "updated_time",
+        order: -1,
       },
+      queryFields: [
+        {
+          label: 'Model Name',
+          value: 'modelName'
+        },
+        {
+          label: 'Author',
+          value: 'author'
+        },
+        {
+          label: 'Framework',
+          value: 'modelFramework'
+        },
+        {
+          label: 'Tag',
+          value: 'tags'
+        },
+        {
+          label: 'Update Time',
+          value: 'updated_time'
+        },
+      ],
       total: 0,
     };
   },
   methods: {
+    viewModel(id,buy=false) {
+      let newPage = this.$router.resolve({
+        path: '/viewModel/'+id,
+        query: {
+          buy: buy,
+        },
+      })
+      window.open(newPage.href, '_blank');
+    },
+    sortData: async function (column) {
+      this.queryInfo.sortProp = column.prop;
+      this.queryInfo.order = column.order == "ascending" ? 1 : -1;
+      await this.getModels();
+    },
     getModels: async function () {
+      if (this.queryInfo.fields.length == 0) {
+        this.$message.error("Please select at least one query field!");
+        return false;
+      }
       let models = await this.$axios.post("queryModels", this.queryInfo);
       this.models = models.data;
       this.total = models.total;
@@ -84,22 +152,18 @@ export default {
       this.queryInfo.pageNum = newSize;
       this.getModels();
     },
-    getElementLeft() {
-      let element = this.$refs.tableRef;
-      var actualLeft = element.offsetLeft;
-      var current = element.offsetParent;
-
-      while (current !== null) {
-        actualLeft += current.offsetLeft;
-        current = current.offsetParent;
+    detectChange(values) {
+      //全部删除选项时恢复默认选项
+      if (values.length == 0) {
+        this.queryInfo.fields = ["modelName"];
       }
-
-      return actualLeft;
-    }
+    },
   },
 }
 </script>
 
 <style scoped>
-
+.el-table th.gutter {
+  display: table-cell !important;
+}
 </style>

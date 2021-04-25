@@ -7,15 +7,15 @@
       </div>
       <div class="personalInfo">
         <span>Hello, {{ userInfo.username }}!</span>
+
         <el-button type="primary" @click="$router.push('/')">Home Page</el-button>
         <el-button @click="logout">Logout</el-button>
       </div>
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside :width="isCollapse ? '64px' : '220px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
-        <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" router :default-active="$route.path"
+      <el-aside width="220px">
+        <el-menu unique-opened router :default-active="activePath"
                  background-color="#333744" text-color="#fff" active-text-color="#409FFF">
           <!-- :unique-opened="true"->只允许展开一个菜单 -->
           <!-- :collapse-transition="false" -> 关闭动画 -->
@@ -63,8 +63,6 @@ export default {
   data() {
     return {
       userInfo: {role: "guest", username: "guest"},
-      // 默认不折叠
-      isCollapse: false,
       // 左侧菜单数据
       menuList: [{
         id: 1,
@@ -73,16 +71,16 @@ export default {
       }, {
         id: 2,
         authName: "Orders",
-        children:[
+        children: [
           {
-            id:21,
-            path:"/personalOrders",
-            authName:"Purchased Orders",
+            id: 21,
+            path: "/personalOrders",
+            authName: "Purchased Orders",
           },
           {
-            id:22,
-            path:"/sellOrders",
-            authName:"Sold Orders",
+            id: 22,
+            path: "/soldOrders",
+            authName: "Sold Orders",
           },
         ],
       }, {
@@ -94,19 +92,19 @@ export default {
         authName: "Personal Info",
         children: [
           {
-            id:41,
-            path:"/basicInfo",
-            authName:"Basic Info",
+            id: 41,
+            path: "/basicInfo",
+            authName: "Basic Info",
           },
           {
-            id:42,
-            path:"/changePassword",
-            authName:"Change Password",
+            id: 42,
+            path: "/changePassword",
+            authName: "Change Password",
           },
           {
-            id:43,
-            path:"/charge",
-            authName:"Charge",
+            id: 43,
+            path: "/charge",
+            authName: "Charge",
           },
         ]
       }],
@@ -115,6 +113,7 @@ export default {
   methods: {
     logout: async function () {
       await this.$axios.get("logout");
+      this.waitingList.clear();
       this.$router.push("/");
     },
     getIdentity: async function () {
@@ -125,9 +124,29 @@ export default {
       }
       this.userInfo = userInfo;
     },
-    // 菜单的折叠与展开
-    toggleCollapse() {
-      this.isCollapse = !this.isCollapse
+  },
+  computed:{
+    paths() {
+      let paths = [];
+      for(let item of this.menuList){
+        if("path" in item)
+        {
+          paths.push(item["path"]);
+        }
+        if("children" in item){
+          for(let it of item["children"]){
+            paths.push(it["path"]);
+          }
+        }
+      }
+      return paths;
+    },
+    activePath(){
+      if(this.paths.includes(this.$route.path)){
+        return this.$route.path;
+      }else{
+        return this.$store.state.activePath;
+      }
     },
   }
 }
@@ -197,5 +216,4 @@ export default {
   // 鼠标放上去变成小手
   cursor: pointer;
 }
-
 </style>

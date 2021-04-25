@@ -1,0 +1,252 @@
+<template>
+  <!-- 面包屑导航区 -->
+  <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">Personal Center</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{path:'/personalModelManagement'}">Personal Model Management</el-breadcrumb-item>
+    <el-breadcrumb-item>{{ $route.params.id == -1 ? "New Model" : "View/Edit Model" }}</el-breadcrumb-item>
+  </el-breadcrumb>
+  <el-card>
+    <el-alert title="Please edit model info" type="info" center show-icon :closable="false"></el-alert>
+    <!-- 步骤条 -->
+    <el-form
+        class="form_center_layout"
+        ref="modelInfoFormRef"
+        :model="modelInfoForm"
+        :rules="modelInfoFormRules"
+        label-width="200px"
+    >
+      <el-form-item label="Model Name" prop="modelName">
+        <el-input v-model="modelInfoForm.modelName"></el-input>
+      </el-form-item>
+      <el-form-item label="Model Description" prop="modelDescription">
+        <el-input type="textarea" v-model="modelInfoForm.modelDescription"></el-input>
+      </el-form-item>
+      <el-form-item style="text-align: left" label="Framework" prop="modelFramework">
+        <el-select v-model="modelInfoForm.modelFramework" placeholder="Please select">
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Price" prop="price">
+        <el-input v-model.number="modelInfoForm.price"></el-input>
+      </el-form-item>
+      <el-form-item style="text-align: left" label="Tags" prop="tags">
+        <el-tag
+            v-for="(item, i) in modelInfoForm.tags"
+            :key="i"
+            closable
+            @close="handleClose(i)"
+        >{{item}}</el-tag>
+        <!-- 输入Tag文本框 -->
+        <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            placeholder="Press enter to add new tag"
+            @keyup.enter="handleInputConfirm"
+            @blur="handleInputConfirm"
+        ></el-input>
+        <el-button
+            v-else
+            class="button-new-tag"
+            size="small"
+            @click="inputVisible=true"
+        >+ New Tag</el-button>
+
+      </el-form-item>
+      <el-form-item style="text-align: left" label="Model File">
+        <el-upload
+            class="upload-demo"
+            :action="$axios.defaults.baseURL+'uploadModel'"
+            :on-success="handleSuccess"
+            :limit="1"
+            :data="mId"
+            with-credentials
+            :on-remove="handleRemove"
+        >
+          <el-button size="small" type="primary">Upload</el-button>
+        </el-upload>
+      </el-form-item>
+<!--      控制form规则的是item不是里面的内容-->
+      <el-form-item style="text-align: left" :label="''" prop="filename">
+        <template v-slot:label>File Name at Server <br></template>
+        <el-link type="primary" target="_blank"  :underline="false" :href="$axios.defaults.baseURL+'downloadModel?type=1&id='+$route.params.id">{{modelFilename}}</el-link>
+      </el-form-item>
+      <el-form-item style="text-align: left" label="Status" prop="status">
+        <el-switch v-model="modelInfoForm.status">
+        </el-switch>
+      </el-form-item>
+      <el-form-item v-if="$route.params.id!=-1" label="Created Time" prop="created_time">
+        <el-input v-model="modelInfoForm.created_time" disabled></el-input>
+      </el-form-item>
+      <el-form-item v-if="$route.params.id!=-1" label="Updated Time" prop="updated_time">
+        <el-input v-model="modelInfoForm.updated_time" disabled></el-input>
+      </el-form-item>
+    </el-form>
+    <el-button type="primary" size="medium" @click="uploadModel">{{ $route.params.id == -1 ? "Add New Model" : "Update Model" }}
+    </el-button>
+  </el-card>
+</template>
+
+<script>
+export default {
+  name: "modelManagement",
+  async created() {
+    this.$store.commit("setActivePath", "/personalModelManagement")
+    await this.getModel();
+  },
+  methods: {
+    // 文本框失去焦点,或者按下Enter触发
+    handleInputConfirm () {
+      // 输入的内容为空时，清空
+      if (this.inputValue.trim().length === 0) {
+        this.inputValue = ''
+        this.inputVisible = false
+        return;
+      } else if(this.modelInfoForm.tags.includes(this.inputValue.trim())){
+        this.inputValue = ''
+        this.inputVisible = false
+        return;
+      }
+      this.modelInfoForm.tags.push(this.inputValue.trim())
+      this.inputValue = ''
+      this.inputVisible = false
+    },
+    getModel: async function (id=false) {
+      if (this.$route.params.id != -1 || id) {
+        let modelInfo = await this.$axios.get("queryModel", {
+          params: {
+            "id": id?id:this.$route.params.id,
+          }
+        });
+        this.modelInfoForm = modelInfo.data;
+      }
+    },
+    handleSuccess(response, file, fileList) {
+      if (response) {
+        this.$message.success("Upload Success!");
+        this.modelInfoForm.filename = response["filename"];
+        console.log(fileList);
+      }
+    },
+    handleRemove(file, fileList) {
+      this.modelInfoForm.filename = "";
+    },
+    // 删除对应的参数可选项
+    handleClose (i, row) {
+      this.modelInfoForm.tags.splice(i, 1)
+    },
+    uploadModel: async function () {
+      this.$refs.modelInfoFormRef.validate(async valid => {
+        if (!valid) {
+          return false;
+        }
+        this.$confirm(this.$route.params.id!=-1?'Do you really want to update model info?':'Do you really want to add new model?', 'Confirm', {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          cancelButtonClass: 'btn-custom-cancel',
+          type: 'success'
+        }).then(async () => {
+          const info = await this.$axios.post('manageModel', {"params": JSON.stringify(this.modelInfoForm)});
+          if (info) {
+            if(this.$route.params.id==-1){
+              this.$message.success('New model has been successfully added!');
+              //这里得出个结论，如果push之后id会变但是不会重新执行getModel函数因为组件没有重新加载，而且就算push之后下面的函数还是在原来id为-1的时候执行的，所以函数返回$route.params.id还是-1！
+              this.$router.push("/manageModel/"+info["id"]);
+              await this.getModel(info["id"]);
+            }else {
+              this.$message.success('Model Update Success!');
+              await this.getModel();
+            }
+          }
+        }).catch(() => {
+        });
+      })
+    },
+  },
+  data() {
+    const checkPrice = (rule, value, callback) => {
+      if (!Number.isInteger(value)) {
+        callback(new Error('Please input Integer'));
+      } else {
+        if (value < 0) {
+          callback(new Error('The price must be at least 0'));
+        } else {
+          callback();
+        }
+      }
+    };
+    return {
+      inputVisible:false,
+      inputValue:"",
+      options: [
+        {
+          value: "sklearn",
+          label: "Scikit-learn",
+        },
+        {
+          value: "pytorch",
+          label: "PyTorch",
+        }
+      ],
+      modelInfoForm: {
+        id: this.$route.params.id,
+        modelName: "",
+        modelDescription: "",
+        modelFramework: "sklearn",
+        tags: [],
+        filename: "",
+        price: 0,
+        status: true,
+        created_time:"",
+        updated_time:"",
+      },
+      fileLists: [],
+      // 表单验证
+      modelInfoFormRules: {
+        modelName: [
+          {required: true, message: 'Please enter model name', trigger: 'blur'},
+          {min: 2, message: 'The length of model should at least 2 characters', trigger: 'blur'}
+        ], price: [
+          {validator: checkPrice, required: true, trigger: 'blur'}
+        ], modelFramework: [
+          {required: true}
+        ], filename: [
+          {required: true,min: 1, message: 'Please upload model file!', trigger: 'blur'}
+        ]
+      },
+      mId: {"mId": this.$route.params.id},
+    };
+  },
+  computed:{
+    modelFilename(){
+      if(this.modelInfoForm.filename==""){
+        return "Waiting for upload..."
+      }else{
+        return this.modelInfoForm.filename;
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.el-tag {
+  margin-right: 8px;
+}
+.input-new-tag {
+  width: 200px;
+}
+.button-new-tag {
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+</style>

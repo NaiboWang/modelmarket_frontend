@@ -1,21 +1,4 @@
 <template>
-<!--    <img alt="Vue logo" src="../assets/logo.png">-->
-<!--    <el-upload-->
-<!--        class="upload-demo"-->
-<!--        :action="$axios.defaults.baseURL+'uploadModel'"-->
-<!--        :on-success="handleSuccess"-->
-<!--        :on-error="handleError"-->
-<!--        :on-remove="handleRemove"-->
-<!--        :before-remove="beforeRemove"-->
-<!--        :limit="1"-->
-<!--        :data="mId"-->
-<!--        with-credentials-->
-<!--        :on-exceed="handleExceed"-->
-<!--        :file-list="fileList"-->
-<!--    >-->
-<!--      <el-button size="small" type="primary">点击上传</el-button>-->
-<!--    </el-upload>-->
-<!--  {{models}}-->
   <el-container>
     <el-header>
       <div>
@@ -50,11 +33,9 @@ export default {
     };
   },
   methods: {
-    handleSuccess(response, file, fileList) {
-      console.log(response, file, fileList);
-    },
     logout: async function (){
       await this.$axios.get("logout");
+      this.waitingList.clear();
       await this.getIdentity();
     },
     getIdentity: async function(){
