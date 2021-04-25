@@ -63,6 +63,7 @@
                   :type="scope.row.style"
                   :icon="scope.row.icon"
                   size="medium"
+                  style="width:205px"
                   @click="managerWaitingList(scope.row)"
               >{{ scope.row.waitStatus }}
               </el-button>
@@ -163,8 +164,6 @@ export default {
       });
       this.orders = orders.data;
       this.total = orders.total;
-
-      this.typeList = new Array(this.total);
       if(this.$route.path=="/soldOrders")
       {
         this.queryFields = [
