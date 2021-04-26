@@ -63,6 +63,7 @@
                   :type="scope.row.style"
                   :icon="scope.row.icon"
                   size="medium"
+                  style="width:215px"
                   @click="managerWaitingList(scope.row)"
               >{{ scope.row.waitStatus }}
               </el-button>
@@ -132,8 +133,8 @@ export default {
       window.open(newPage.href, '_blank');
     },
     sortData: async function(column){
-      console.log(column);
       this.queryInfo.sortProp = column.prop;
+      this.queryInfo.pageNum = 1; //排序后回到第一页
       this.queryInfo.order = column.order == "ascending"?1:-1;
       await this.getOrders();
     },
@@ -153,7 +154,7 @@ export default {
       orders.data.map((order)=>{
         if(this.waitingList.exist(order.id)){
           order["style"] = "danger";
-          order["waitStatus"] = "Delete from Waiting List";
+          order["waitStatus"] = "Remove from Waiting List";
           order["icon"] = "el-icon-delete";
         }else{
           order["style"] = "success";
@@ -163,8 +164,6 @@ export default {
       });
       this.orders = orders.data;
       this.total = orders.total;
-
-      this.typeList = new Array(this.total);
       if(this.$route.path=="/soldOrders")
       {
         this.queryFields = [
@@ -240,7 +239,7 @@ export default {
         this.waitingList.remove(row);
       }else{
         row.style = "danger";
-        row["waitStatus"] = "Delete from Waiting List";
+        row["waitStatus"] = "Remove from Waiting List";
         row["icon"] = "el-icon-delete";
         this.waitingList.push(row);
       }

@@ -130,6 +130,7 @@ export default {
     },
     sortData: async function (column) {
       this.queryInfo.sortProp = column.prop;
+      this.queryInfo.pageNum = 1; //排序后回到第一页
       this.queryInfo.order = column.order == "ascending" ? 1 : -1;
       await this.getModels();
     },
