@@ -1,7 +1,6 @@
 <template>
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{ path: '/personalHome' }">Personal Center
-    </el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Orders</el-breadcrumb-item>
     <el-breadcrumb-item v-if="$route.path.includes('viewOrder')" :to="{path:'/personalOrders'}">Purchased Orders</el-breadcrumb-item>
     <el-breadcrumb-item v-else :to="{path:'/soldOrders'}">Sold Orders</el-breadcrumb-item>
@@ -74,8 +73,19 @@
           </tr>
         </table>
         <div style="text-align: center;margin-top: 15px">
-          <el-button type="success" icon="el-icon-download" size="medium" @click="downloadModel">Download
+          <el-button type="primary" icon="el-icon-download" size="medium" style="width:215px" @click="downloadModel">Download
             Model
+          </el-button>
+        </div>
+        <div style="text-align: center;margin-top: 15px">
+          <el-button
+              v-if="$store.state.userRole=='user'"
+              :type="style"
+              :icon="icon"
+              size="medium"
+              style="width:215px"
+              @click="managerWaitingList(orderInfo)"
+          >{{ waitStatus }}
           </el-button>
         </div>
       </el-col>
@@ -89,6 +99,13 @@ export default {
   name: "viewOrder",
   async created() {
     await this.getOrder();
+    if(this.$route.path.includes('viewOrder'))
+    {
+      this.$store.commit("setActivePath","/personalOrders");
+    }else{
+      this.$store.commit("setActivePath","/soldOrders");
+    }
+
   },
   methods: {
     getOrder: async function () {
@@ -102,14 +119,39 @@ export default {
       if (this.$route.query["buy"]) {
         this.dialogFormVisible = true;
       }
+      if(!this.waitingList.exist(this.orderInfo.id)){
+        this.style = "success";
+        this.waitStatus = "Add to Waiting List";
+        this.icon = "el-icon-plus";
+      }else{
+        this.style = "danger";
+        this.waitStatus = "Remove from Waiting List";
+        this.icon = "el-icon-delete";
+      }
     },
     downloadModel:function (){
       window.open(this.$axios.defaults.baseURL+'downloadModel?type=0&id='+ this.orderInfo.id);
-    }
+    },
+    managerWaitingList: function (row){
+      if(this.style == "danger") {
+        this.style = "success";
+        this.waitStatus = "Add to Waiting List";
+        this.icon = "el-icon-plus";
+        this.waitingList.remove(row);
+      }else{
+        this.style = "danger";
+        this.waitStatus = "Remove from Waiting List";
+        this.icon = "el-icon-delete";
+        this.waitingList.push(row);
+      }
+    },
   },
   data() {
     return {
       orderInfo: {},
+      style:"",
+      waitStatus:"",
+      icon:"",
     };
   },
 }

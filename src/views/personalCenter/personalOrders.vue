@@ -1,8 +1,7 @@
 <template>
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{ path: '/personalHome' }">Personal Center
-    </el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Orders</el-breadcrumb-item>
     <el-breadcrumb-item v-if="$route.path=='/personalOrders'" :to="{ path: '/personalOrders' }">Purchased Orders</el-breadcrumb-item>
     <el-breadcrumb-item v-else :to="{ path: '/personalOrders' }">Sold Orders</el-breadcrumb-item>
@@ -47,11 +46,13 @@
                        width="130px"></el-table-column>
       <el-table-column :sortable="'custom'" header-align="center" align="center" label="Transaction Price" prop="price"
                        width="110px"></el-table-column>
-      <el-table-column v-if="$route.path=='/soldOrders'" :sortable="'custom'" header-align="center" align="center" label="Buyer" prop="buyer"
+      <el-table-column  :sortable="'custom'" header-align="center" align="center" label="Seller" prop="author"
+                       width="110px"></el-table-column>
+      <el-table-column v-if="$route.path=='/soldOrders'||$store.state.userRole=='manager'" :sortable="'custom'" header-align="center" align="center" label="Buyer" prop="buyer"
                        width="150px"></el-table-column>
       <el-table-column :sortable="'custom'" header-align="center" align="center" label="Purchased Time" prop="purchased_time"
                        width="160px"></el-table-column>
-      <el-table-column header-align="center" align="center" label="Operations" width="350px">
+      <el-table-column header-align="center" align="center" label="Operations" :width="$store.state.userRole=='user'?'350px':'150px'">
         <template v-slot="scope">
           <el-button type="primary" v-if="$route.path=='/soldOrders'" icon="el-icon-view" size="medium"
                      @click="viewOrder(`/viewSoldOrder/${scope.row.id}`)">View
@@ -60,6 +61,7 @@
                      @click="viewOrder(`/viewOrder/${scope.row.id}`)">View
           </el-button>
               <el-button
+                  v-if="$store.state.userRole=='user'"
                   :type="scope.row.style"
                   :icon="scope.row.icon"
                   size="medium"
@@ -81,16 +83,18 @@
         :total="total"
         background
     ></el-pagination>
-    {{updateComponent}}
+<!--    {{// updateComponent}}-->
   </el-card>
 </template>
 
 <script>
 export default {
   name: "personalOrders",
+  async created(){
+    await this.getOrders();
+  },
   data() {
     return {
-      typeList: {},
       orders: [],
       queryInfo: {
         query: '',
@@ -232,7 +236,7 @@ export default {
       }
     },
     managerWaitingList: function (row){
-      if(this.waitingList.exist(row["id"])) {
+      if(row.style == "danger") {
         row.style = "success";
         row["waitStatus"] = "Add to Waiting List";
         row["icon"] = "el-icon-plus";
@@ -246,18 +250,23 @@ export default {
     },
 
   },
-  computed:{
-    updateComponent(){
-      if(this.$route.path == "/soldOrders")
-      {
-        this.getOrders();
-        return "";
-      }else{
-        this.getOrders();
-        return "";
-      }
-    },
+  // computed:{
+  //   updateComponent(){
+  //     if(this.$route.path == "/soldOrders")
+  //     {
+  //       this.getOrders();
+  //       return "";
+  //     }else{
+  //       this.getOrders();
+  //       return "";
+  //     }
+  //   },
+  // },
+  watch: {
+    // 如果路由有变化，会再次执行该方法，完成组件复用功能
+    "$route": "getOrders"
   }
+
 }
 </script>
 

@@ -1,8 +1,7 @@
 <template>
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item v-if="$route.path=='/changePassword'" :to="{ path: '/personalHome' }">Personal Center</el-breadcrumb-item>
-    <el-breadcrumb-item v-else-if="$route.path=='/managementPassword'" :to="{ path: '/managementHome' }">Management Center</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Personal Info</el-breadcrumb-item>
     <el-breadcrumb-item>Change Password</el-breadcrumb-item>
   </el-breadcrumb>

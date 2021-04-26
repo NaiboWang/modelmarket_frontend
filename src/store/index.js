@@ -4,8 +4,9 @@ import { ElMessage } from "element-plus";
 export default createStore({
   state: {
     backRef:"/",
-    activePath:"/personalModelManagement", //默认激活的标签
+    activePath:"/personalModelList", //默认激活的标签
     activeManagementPath:"/managementInfo", //默认激活的标签
+    userRole:"guest",
     iconObj: {
       '1': 'iconfont icon-tijikongjian',
       '2': 'iconfont icon-danju',
@@ -13,6 +14,7 @@ export default createStore({
       '22': 'el-icon-sell',
       '3': 'el-icon-menu icon-align',
       '4': 'iconfont icon-user',
+      '5': 'el-icon-s-claim icon-align',
       '41': 'el-icon-info',
       '42': 'el-icon-lock',
       '43': 'el-icon-wallet',
@@ -29,6 +31,9 @@ export default createStore({
     },
     setActiveManagementPath(state, path){
       state.activeManagementPath = path;
+    },
+    setUserRole(state,role){
+      state.userRole = role;
     },
   },
   actions: {

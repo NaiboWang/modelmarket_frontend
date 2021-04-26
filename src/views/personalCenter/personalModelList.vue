@@ -1,11 +1,7 @@
 <template>
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item v-if="$route.path=='/personalModelManagement'" :to="{ path: '/personalHome' }">Personal Center
-    </el-breadcrumb-item>
-    <el-breadcrumb-item v-else-if="$route.path=='/managementModels'" :to="{ path: '/managementHome' }">Management
-      Center
-    </el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Personal Model Management</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
@@ -34,7 +30,8 @@
     <!-- 表格数据 -->
     <el-table ref="tableRef" :data="models" @sort-change="sortData" border stripe class="left_layout">
       <el-table-column header-align="center" :sortable="'custom'" align="center" label="ID" type="index"></el-table-column>
-      <el-table-column header-align="center" :sortable="'custom'" align="center" label="Name" prop="modelName"></el-table-column>
+      <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Name" prop="modelName"></el-table-column>
+      <el-table-column header-align="center" v-if="$store.state.userRole == 'manager'" :sortable="'custom'" align="center" label="Author" prop="author"></el-table-column>
       <el-table-column header-align="center" align="center" label="Tags">
         <template v-slot="scope">
           <el-tag
@@ -52,33 +49,36 @@
       <el-table-column header-align="center" align="center" :sortable="'custom'" label="Status" prop="status"
                        width="110px">
         <template v-slot="scope">
-          <span style="color:blue" v-if="scope.row.status==true">Normal</span>
-          <span v-else>Disabled</span>
+<!--          <span style="color:blue" v-if="scope.row.status==true">Normal</span>-->
+<!--          <span v-else>Disabled</span>-->
+          <el-switch @change="changeModelStatus(scope.row,scope.row.id,scope.row.status)" v-model="scope.row.status">
+          </el-switch>
         </template>
 
       </el-table-column>
       <el-table-column header-align="center" align="center" label="Operations" width="280px">
         <template v-slot="scope">
-          <el-button type="primary" icon="el-icon-edit" size="medium"
-                     @click="editModel(`${scope.row.id}`)">View/Edit
+          <el-button type="primary" :icon="$store.state.userRole == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
+                     @click="editModel(`${scope.row.id}`)">{{$store.state.userRole == 'user'?"View/Edit":"View"}}
           </el-button>
-          <el-popconfirm
-              confirmButtonText='Yes'
-              cancelButtonText='No'
-              icon="el-icon-info"
-              iconColor="red"
-              title="Do you really want to delete this model?"
-              @confirm='deleteModel(`${scope.row.id}`)'
-          >
-            <template #reference>
-              <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="medium"
-              >Delete
-              </el-button>
-            </template>
-          </el-popconfirm>
+<!--          <el-popconfirm-->
+
+<!--              confirmButtonText='Yes'-->
+<!--              cancelButtonText='No'-->
+<!--              icon="el-icon-info"-->
+<!--              iconColor="red"-->
+<!--              title="Do you really want to disable this model?"-->
+<!--              @confirm='deleteModel(`${scope.row.id}`)'-->
+<!--          >-->
+<!--            <template  #reference>-->
+<!--              <el-button-->
+<!--                  type="info"-->
+<!--                  icon="el-icon-turn-off"-->
+<!--                  size="medium"-->
+<!--              >Disable-->
+<!--              </el-button>-->
+<!--            </template>-->
+<!--          </el-popconfirm>-->
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +94,7 @@
         background
     ></el-pagination>
     <el-row>
-      <el-col :span="6">
+      <el-col v-if="$store.state.userRole=='user'" :span="6">
         <el-button style="float: left" type="primary" @click="$router.push('/manageModel/-1')">New Model</el-button>
       </el-col>
     </el-row>
@@ -104,7 +104,14 @@
 
 <script>
 export default {
-  name: "personalModelManagement",
+  name: "personalModelList",
+  mounted() {
+    if(this.$store.state.userRole=="manager")
+    {
+      this.queryFields.push({label: 'Author',
+        value: 'author'});
+    }
+  },
   async created() {
     await this.getModels();
   },
@@ -184,6 +191,19 @@ export default {
         }
       });
       await this.getModels();
+    },
+    changeModelStatus: async function(row,id,status){
+      let info = await this.$axios.get("changeModelStatus",{
+        params:{
+          "id":id,
+          "status":status,
+        }
+      });
+      if(info){
+        this.$message.success(info.msg);
+      }else{
+        row.status = !status;
+      }
     }
   },
 }

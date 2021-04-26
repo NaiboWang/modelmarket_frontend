@@ -13,6 +13,7 @@ function initializeList()
 function get(){
   return JSON.parse(localStorage.getItem("waitingList"));
 }
+
 function exist(id){
   waitingList = get();
   let exist_OK = false;
@@ -69,7 +70,7 @@ function remove(item){
   }else{
     ElMessage({
       message: "This model doesn't exist in the waiting list",
-      type: 'error',
+      type: 'info',
       center: true
     });
   }

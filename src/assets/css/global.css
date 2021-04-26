@@ -31,4 +31,11 @@
     margin-right: 8px;
     margin-top:2px;
 }
+.logo{
+    margin-left: 10px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #eee;
+    background-color: #fff;
+}
 

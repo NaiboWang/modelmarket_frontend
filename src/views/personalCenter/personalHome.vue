@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <div>
-        <router-link to="/"><img src="../../assets/logo.jpg" alt/></router-link>
+        <router-link to="/"><img class="logo" src="../../assets/logo.jpg" alt/></router-link>
         <span>Machine Learning Model Market</span>
       </div>
       <div class="personalInfo">
@@ -64,50 +64,7 @@ export default {
     return {
       userInfo: {role: "guest", username: "guest"},
       // 左侧菜单数据
-      menuList: [{
-        id: 1,
-        path: "/personalModelManagement",
-        authName: "Model Management",
-      }, {
-        id: 2,
-        authName: "Orders",
-        children: [
-          {
-            id: 21,
-            path: "/personalOrders",
-            authName: "Purchased Orders",
-          },
-          {
-            id: 22,
-            path: "/soldOrders",
-            authName: "Sold Orders",
-          },
-        ],
-      }, {
-        id: 3,
-        path: "/modelEnsemble",
-        authName: "Model Ensemble",
-      }, {
-        id: 4,
-        authName: "Personal Info",
-        children: [
-          {
-            id: 41,
-            path: "/basicInfo",
-            authName: "Basic Info",
-          },
-          {
-            id: 42,
-            path: "/changePassword",
-            authName: "Change Password",
-          },
-          {
-            id: 43,
-            path: "/charge",
-            authName: "Charge",
-          },
-        ]
-      }],
+      menuList: [],
     };
   },
   methods: {
@@ -118,33 +75,121 @@ export default {
     },
     getIdentity: async function () {
       let userInfo = await this.$axios.get("getIdentity");
-      if (userInfo.role != "user") {
+      this.$store.commit("setUserRole",userInfo.role);
+      if (userInfo.role == "user") {
+        this.menuList = [
+          {
+            id: 1,
+            path: "/personalModelList",
+            authName: "Model Management",
+          }, {
+            id: 2,
+            authName: "Orders",
+            children: [
+              {
+                id: 21,
+                path: "/personalOrders",
+                authName: "Purchased Orders",
+              },
+              {
+                id: 22,
+                path: "/soldOrders",
+                authName: "Sold Orders",
+              },
+            ],
+          }, {
+            id: 5,
+            path: "/viewWaitingList",
+            authName: "Waiting List",
+          },
+          {
+            id: 3,
+            path: "/modelEnsemble",
+            authName: "Model Ensemble",
+          }, {
+            id: 4,
+            authName: "Personal Info",
+            children: [
+              {
+                id: 41,
+                path: "/basicInfo",
+                authName: "Basic Info",
+              },
+              {
+                id: 42,
+                path: "/changePassword",
+                authName: "Change Password",
+              },
+              {
+                id: 43,
+                path: "/charge",
+                authName: "Charge",
+              },
+            ]
+          }];
+      } else if (userInfo.role == "manager") {
+        this.menuList = [
+          {
+            id: 1,
+            path: "/personalModelList",
+            authName: "Model Management",
+          }, {
+            id: 2,
+            authName: "Orders",
+            children: [
+              {
+                id: 21,
+                path: "/personalOrders",
+                authName: "Purchased Orders",
+              },
+              {
+                id: 22,
+                path: "/soldOrders",
+                authName: "Sold Orders",
+              },
+            ],
+          }, {
+            id: 4,
+            authName: "Personal Info",
+            children: [
+              {
+                id: 41,
+                path: "/basicInfo",
+                authName: "Basic Info",
+              },
+              {
+                id: 42,
+                path: "/changePassword",
+                authName: "Change Password",
+              },
+            ]
+          }];
+      } else {
         this.$message.error('Sorry, you have not logged in or you are not authorised user!');
         this.$router.push("/");
       }
       this.userInfo = userInfo;
     },
   },
-  computed:{
+  computed: {
     paths() {
       let paths = [];
-      for(let item of this.menuList){
-        if("path" in item)
-        {
+      for (let item of this.menuList) {
+        if ("path" in item) {
           paths.push(item["path"]);
         }
-        if("children" in item){
-          for(let it of item["children"]){
+        if ("children" in item) {
+          for (let it of item["children"]) {
             paths.push(it["path"]);
           }
         }
       }
       return paths;
     },
-    activePath(){
-      if(this.paths.includes(this.$route.path)){
+    activePath() {
+      if (this.paths.includes(this.$route.path)) {
         return this.$route.path;
-      }else{
+      } else {
         return this.$store.state.activePath;
       }
     },
@@ -179,10 +224,6 @@ export default {
   > div {
     display: flex;
     align-items: center;
-
-    img {
-      height: 40px;
-    }
 
     span {
       margin-left: 15px;

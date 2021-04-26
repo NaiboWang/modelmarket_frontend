@@ -2,14 +2,13 @@
   <el-container>
     <el-header>
       <div>
-        <router-link to="/"><img src="../../assets/logo.jpg" alt /></router-link>
+        <router-link to="/"><img class="logo" src="../../assets/logo.jpg" alt /></router-link>
         <span>Machine Learning Model Market</span>
 
       </div>
       <div class="personalInfo" v-if="userInfo.role !='guest'" >
         <span>Hello, {{userInfo.username}}!</span>
-        <el-button type="primary" v-if="userInfo.role =='user'" @click="$router.push('/personalHome')">Personal Center</el-button>
-        <el-button type="primary" v-else-if="userInfo.role =='manager'" @click="$router.push('/managementHome')">Management Center</el-button>
+        <el-button type="primary" @click="$router.push('/personalHome')">{{userInfo.role =='manager'?'Management Center':'Personal Center'}}</el-button>
         <el-button  @click="logout">Logout</el-button>
       </div>
       <el-button type="primary" v-else @click="$router.push('/login')">Login</el-button>
@@ -36,7 +35,8 @@ export default {
     logout: async function (){
       await this.$axios.get("logout");
       this.waitingList.clear();
-      await this.getIdentity();
+      let userInfo = await this.getIdentity();
+      this.$store.commit("setUserRole",userInfo.role);
     },
     getIdentity: async function(){
       let userInfo = await this.$axios.get("getIdentity");
@@ -65,11 +65,6 @@ export default {
   > div {
     display: flex;
     align-items: center;
-    img {
-      margin-left: 10px;
-      height: 40px;
-      border-radius: 50%;
-    }
     span {
       margin-left: 15px;
     }

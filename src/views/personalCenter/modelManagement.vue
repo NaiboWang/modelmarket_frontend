@@ -1,12 +1,13 @@
 <template>
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{ path: '/personalHome' }">Personal Center</el-breadcrumb-item>
-    <el-breadcrumb-item :to="{path:'/personalModelManagement'}">Personal Model Management</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{path:'/personalModelList'}">Model Management</el-breadcrumb-item>
     <el-breadcrumb-item>{{ $route.params.id == -1 ? "New Model" : "View/Edit Model" }}</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
-    <el-alert title="Please edit model info" type="info" center show-icon :closable="false"></el-alert>
+    <el-alert v-if="$store.state.userRole=='user'" title="Please edit model info" type="info" center show-icon :closable="false"></el-alert>
+    <el-alert v-else title="You can only view the model info" type="info" center show-icon :closable="false"></el-alert>
     <!-- 步骤条 -->
     <el-form
         class="form_center_layout"
@@ -14,6 +15,7 @@
         :model="modelInfoForm"
         :rules="modelInfoFormRules"
         label-width="200px"
+        :disabled = "$store.state.userRole=='manager'"
     >
       <el-form-item label="Model Name" prop="modelName">
         <el-input v-model="modelInfoForm.modelName"></el-input>
@@ -79,7 +81,7 @@
         <el-link type="primary" target="_blank"  :underline="false" :href="$axios.defaults.baseURL+'downloadModel?type=1&id='+$route.params.id">{{modelFilename}}</el-link>
       </el-form-item>
       <el-form-item style="text-align: left" label="Status" prop="status">
-        <el-switch v-model="modelInfoForm.status">
+        <el-switch  v-model="modelInfoForm.status">
         </el-switch>
       </el-form-item>
       <el-form-item v-if="$route.params.id!=-1" label="Created Time" prop="created_time">
@@ -89,7 +91,7 @@
         <el-input v-model="modelInfoForm.updated_time" disabled></el-input>
       </el-form-item>
     </el-form>
-    <el-button type="primary" size="medium" @click="uploadModel">{{ $route.params.id == -1 ? "Add New Model" : "Update Model" }}
+    <el-button type="primary" v-if="$store.state.userRole=='user'" size="medium" @click="uploadModel">{{ $route.params.id == -1 ? "Add New Model" : "Update Model" }}
     </el-button>
   </el-card>
 </template>
@@ -98,7 +100,7 @@
 export default {
   name: "modelManagement",
   async created() {
-    this.$store.commit("setActivePath", "/personalModelManagement")
+    this.$store.commit("setActivePath", "/personalModelList")
     await this.getModel();
   },
   methods: {

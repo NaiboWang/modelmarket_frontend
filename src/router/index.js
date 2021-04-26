@@ -3,7 +3,7 @@ import Home from '../views/home/Home.vue'
 import modelList from "../views/home/modelList.vue"
 import viewModel from "../views/home/viewModel.vue"
 import personalHome from "@/views/personalCenter/personalHome";
-import personalModelManagement from "@/views/personalCenter/personalModelManagement";
+import personalModelList from "@/views/personalCenter/personalModelList";
 import personalOrders from "@/views/personalCenter/personalOrders";
 import modelEnsemble from "@/views/personalCenter/modelEnsemble";
 import changePassword from "@/views/personalCenter/changePassword";
@@ -12,6 +12,7 @@ import managementHome from "@/views/management_center/managementHome";
 import charge from "@/views/personalCenter/charge";
 import modelManagement from "@/views/personalCenter/modelManagement";
 import viewOrder from "@/views/personalCenter/viewOrder";
+import viewWaitingList from "@/views/personalCenter/viewWaitingList";
 
 const routes = [
   {
@@ -41,9 +42,9 @@ const routes = [
     path: '/personalHome',
     name: 'personalHome',
     component: personalHome,
-    redirect: '/personalModelManagement',
+    redirect: '/personalModelList',
     children: [
-      { path: '/personalModelManagement', component: personalModelManagement },
+      { path: '/personalModelList', component: personalModelList },
       { path: '/manageModel/:id', component: modelManagement },
       { path: '/personalOrders', component: personalOrders },
       { path: '/soldOrders', component: personalOrders },
@@ -52,6 +53,7 @@ const routes = [
       { path: '/modelEnsemble', component: modelEnsemble },
       { path: '/changePassword', component: changePassword },
       { path: '/basicInfo', component: basicInfo },
+      { path: '/viewWaitingList', component: viewWaitingList },
       { path: '/charge', component: charge },
     ]
   },
@@ -61,7 +63,7 @@ const routes = [
     component: managementHome,
     redirect: '/managementInfo',
     children: [
-      { path: '/managementModels', component: personalModelManagement},
+      { path: '/managementModels', component: personalModelList},
       { path: '/managementPassword', component: changePassword },
       { path: '/managementInfo', component: basicInfo },
     ]

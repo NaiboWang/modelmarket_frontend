@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <div>
-        <router-link to="/"><img src="../../assets/logo.jpg" alt/></router-link>
+        <router-link to="/"><img class="logo" src="../../assets/logo.jpg" alt/></router-link>
         <span>Machine Learning Model Market</span>
       </div>
       <div class="personalInfo">
@@ -171,10 +171,6 @@ export default {
   > div {
     display: flex;
     align-items: center;
-
-    img {
-      height: 40px;
-    }
 
     span {
       margin-left: 15px;

@@ -5,7 +5,7 @@
   </el-breadcrumb>
   <el-card>
     <!-- 表格数据 -->
-    <el-table ref="tableRef" :data="orders" border height="400px" stripe class="left_layout">
+    <el-table ref="tableRef" empty-text="Please add your orders to the waiting list first" :data="orders" border height="400px" stripe class="left_layout">
       <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>
       <el-table-column sortable header-align="center" align="center" label="Order Number"
                        prop="orderID"></el-table-column>
@@ -32,10 +32,7 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" label="Operations" width="350px">
         <template v-slot="scope">
-          <el-button type="primary" v-if="$route.path=='/soldOrders'" icon="el-icon-view" size="medium"
-                     @click="viewOrder(`/viewSoldOrder/${scope.row.id}`)">View
-          </el-button>
-          <el-button type="primary" v-else icon="el-icon-view" size="medium"
+          <el-button type="primary" icon="el-icon-view" size="medium"
                      @click="viewOrder(`/viewOrder/${scope.row.id}`)">View
           </el-button>
           <el-button
@@ -108,10 +105,11 @@ export default {
         {
           label: "Voting",
           value: "Voting"
-        }, {
-          label: "Boosting",
-          value: "Boosting",
-        }
+        },
+        // {
+        //   label: "Boosting",
+        //   value: "Boosting",
+        // }
       ]
     };
   }, methods: {
@@ -121,7 +119,7 @@ export default {
       })
       window.open(newPage.href, '_blank');
     },
-    getOrders: async function () {
+    getOrders: function () {
       let orders = this.waitingList.get();
       // this.orders = orders.slice((this.pageNum - 1) * this.pageSize, this.pageNum * this.pageSize);
       orders.map((order)=>{
