@@ -2,7 +2,7 @@
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
-    <el-breadcrumb-item>Personal Model Management</el-breadcrumb-item>
+    <el-breadcrumb-item>Model Management</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
     <el-row class="left_layout">
@@ -56,7 +56,7 @@
         </template>
 
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="Operations" width="280px">
+      <el-table-column v-if="$store.state.userRole == 'user'" header-align="center" align="center" label="Operations" width="220px">
         <template v-slot="scope">
           <el-button type="primary" :icon="$store.state.userRole == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
                      @click="editModel(`${scope.row.id}`)">{{$store.state.userRole == 'user'?"View/Edit":"View"}}
@@ -79,6 +79,13 @@
 <!--              </el-button>-->
 <!--            </template>-->
 <!--          </el-popconfirm>-->
+        </template>
+      </el-table-column>
+      <el-table-column v-else header-align="center" align="center" label="Operations" width="150px">
+        <template v-slot="scope">
+          <el-button type="primary" :icon="$store.state.userRole == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
+                     @click="editModel(`${scope.row.id}`)">{{$store.state.userRole == 'user'?"View/Edit":"View"}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

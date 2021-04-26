@@ -6,7 +6,7 @@ export default createStore({
     backRef:"/",
     activePath:"/personalModelList", //默认激活的标签
     activeManagementPath:"/managementInfo", //默认激活的标签
-    userRole:"guest",
+    userRole:"user",
     iconObj: {
       '1': 'iconfont icon-tijikongjian',
       '2': 'iconfont icon-danju',

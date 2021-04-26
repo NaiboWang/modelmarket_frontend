@@ -136,18 +136,7 @@ export default {
           }, {
             id: 2,
             authName: "Orders",
-            children: [
-              {
-                id: 21,
-                path: "/personalOrders",
-                authName: "Purchased Orders",
-              },
-              {
-                id: 22,
-                path: "/soldOrders",
-                authName: "Sold Orders",
-              },
-            ],
+            path: "/personalOrders",
           }, {
             id: 4,
             authName: "Personal Info",

@@ -2,8 +2,8 @@
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Orders</el-breadcrumb-item>
-    <el-breadcrumb-item v-if="$route.path.includes('viewOrder')" :to="{path:'/personalOrders'}">Purchased Orders</el-breadcrumb-item>
-    <el-breadcrumb-item v-else :to="{path:'/soldOrders'}">Sold Orders</el-breadcrumb-item>
+    <el-breadcrumb-item v-if="$route.path.includes('viewOrder')&&$store.state.userRole!='manager'" :to="{path:'/personalOrders'}">Purchased Orders</el-breadcrumb-item>
+    <el-breadcrumb-item v-else-if="$store.state.userRole!='manager'" :to="{path:'/soldOrders'}">Sold Orders</el-breadcrumb-item>
     <el-breadcrumb-item>Order Details</el-breadcrumb-item>
   </el-breadcrumb>
 
