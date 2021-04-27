@@ -7,6 +7,7 @@ import ElementPlus from 'element-plus';
 import locale from 'element-plus/lib/locale/lang/en'
 import 'element-plus/lib/theme-chalk/index.css';
 import './assets/fonts/iconfont.css'
+import './assets/fonts/iconfont-user/iconfont.css'
 import "./assets/css/global.css"
 import waitingList from './components/waitingList.vue'
 

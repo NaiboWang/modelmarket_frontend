@@ -137,7 +137,13 @@ export default {
             id: 2,
             authName: "Orders",
             path: "/personalOrders",
-          }, {
+          },
+          {
+            id:0,
+            path: "/userManagement",
+            authName: "User Management",
+          },
+          {
             id: 4,
             authName: "Personal Info",
             children: [

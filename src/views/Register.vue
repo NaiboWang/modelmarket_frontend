@@ -3,26 +3,26 @@
     <div class="login_box">
       <!-- 头像区 -->
       <div class="avatar_box">
-        <router-link to="/"><img  src="../assets/logo.jpg" alt="avatar" /></router-link>
+        <router-link to="/"><img src="../assets/logo.jpg" alt="avatar"/></router-link>
       </div>
       <h2>Register</h2>
       <!-- 登录表单 -->
       <div style="margin-top: 20px">
         <el-form
-          ref="registerFormRef"
-          :model="registerForm"
-          :rules="registerFormRules"
-          label-width="60px"
-          class="login_form"
+            ref="registerFormRef"
+            :model="registerForm"
+            :rules="registerFormRules"
+            label-width="60px"
+            class="login_form"
         >
           <el-form-item label="Username" prop="username">
             <el-input v-model="registerForm.username" prefix-icon="iconfont icon-user"></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="pass">
             <el-input
-              v-model="registerForm.pass"
-              type="password"
-              prefix-icon="iconfont icon-3702mima"
+                v-model="registerForm.pass"
+                type="password"
+                prefix-icon="iconfont icon-3702mima"
             ></el-input>
           </el-form-item>
           <el-form-item label="ConfirmPass" prop="confirmPass">
@@ -45,7 +45,7 @@
 <script>
 
 export default {
-  data () {
+  data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Please enter password'));
@@ -65,35 +65,43 @@ export default {
         callback();
       }
     };
+    var validateUsername = (rule, value, callback) => {
+      if (value.includes(' ')) {
+        callback(new Error('User name cannot contain space'));
+      } else {
+        callback();
+      }
+    };
     return {
       registerForm: {
         username: '',
         pass: '',
-        confirmPass:'',
+        confirmPass: '',
       },
       // 表单验证
       registerFormRules: {
         username: [
-          { required: true, message: 'Please enter username', trigger: 'blur' },
-          { min: 2, max: 10, message: 'The length of username should between 2 to 10 characters', trigger: 'blur' }
+          {validator: validateUsername, trigger: 'blur'},
+          {required: true, message: 'Please enter username', trigger: 'blur'},
+          {min: 2, max: 10, message: 'Username should between 2 to 10 characters', trigger: 'blur'}
         ],
         pass: [
-          { validator: validatePass, trigger: 'blur' },
-          { required: true, message: 'Please enter password', trigger: 'blur' },
-          { min: 2, max: 18, message: 'The length of password should between 2 to 18 characters', trigger: 'blur' }
+          {validator: validatePass, trigger: 'blur'},
+          {required: true, message: 'Please enter password', trigger: 'blur'},
+          {min: 2, max: 18, message: 'Password should between 2 to 18 characters', trigger: 'blur'}
         ],
         confirmPass: [
-          { validator: validatePass2, trigger: 'blur' },
-          { required: true, message: 'Please enter password', trigger: 'blur' },
+          {validator: validatePass2, trigger: 'blur'},
+          {required: true, message: 'Please enter password', trigger: 'blur'},
         ],
       }
     }
   },
   methods: {
-    returnLogin(){
+    returnLogin() {
       this.$router.push("/login");
     },
-    register () {
+    register() {
       // 表单预验证
       // valid：bool类型
 
@@ -108,11 +116,12 @@ export default {
           type: 'success'
         }).then(async () => {
           const info = await this.$axios.post('register', this.registerForm);
-          if(info){
+          if (info) {
             this.$message.success('Register Success, please log in!');
             this.$router.push("/login");
           }
-        }).catch(() => {});
+        }).catch(() => {
+        });
 
         // this.$router.push('/home');
       })
@@ -128,6 +137,7 @@ export default {
   background-color: #2b4b6b;
   height: 100%;
 }
+
 .login_box {
   width: 450px;
   height: 360px;
@@ -150,6 +160,7 @@ export default {
     left: 50%;
     transform: translate(-30%, -100%);
     background-color: #fff;
+
     img {
       width: 100%;
       height: 100%;
@@ -157,12 +168,14 @@ export default {
       background-color: #eee;
     }
   }
-  h2{
+
+  h2 {
     text-align: center;
     margin-left: 50px;
     margin-top: 10px;
   }
 }
+
 .login_form {
   position: absolute;
   bottom: 60px;
@@ -171,17 +184,23 @@ export default {
   margin-top: 20px;
   box-sizing: border-box;
 }
+
 .btns {
   display: flex;
   justify-content: center;
 }
+
 .info {
   font-size: 13px;
   margin: 10px 15px;
 }
-.el-input
-{
+
+.el-input {
   margin-left: 30px;
   width: 80%;
+}
+:deep(.el-form-item__error)
+{
+  margin-left: 60px;
 }
 </style>

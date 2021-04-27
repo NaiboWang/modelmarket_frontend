@@ -8,6 +8,7 @@ export default createStore({
     activeManagementPath:"/managementInfo", //默认激活的标签
     userRole:"user",
     iconObj: {
+      '0': 'iconfont-user icon-users',
       '1': 'iconfont icon-tijikongjian',
       '2': 'iconfont icon-danju',
       '21': 'el-icon-sold-out',

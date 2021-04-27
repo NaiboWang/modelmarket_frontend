@@ -18,7 +18,10 @@
         <el-form-item label="Deposit" prop="deposit">
           <el-input v-model="readableUserInfo.deposit"></el-input>
         </el-form-item>
-        <el-form-item class="disabledClass" v-if="userInfo.status == 0" label="Status" prop="status">
+        <el-form-item label="Register Time" prop="register_time">
+          <el-input v-model="readableUserInfo.register_time"></el-input>
+        </el-form-item>
+        <el-form-item class="disabledClass" v-if="!userInfo.status" label="Status" prop="status">
           <el-input v-model="readableUserInfo.status"></el-input>
         </el-form-item>
         <el-form-item class="enabledClass" v-else label="Status" prop="status">

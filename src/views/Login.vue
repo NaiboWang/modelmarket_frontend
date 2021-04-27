@@ -49,11 +49,11 @@ export default {
       loginFormRules: {
         username: [
           { required: true, message: 'Please enter username', trigger: 'blur' },
-          { min: 2, max: 10, message: 'The length of username should between 2 to 10 characters', trigger: 'blur' }
+          { min: 2, max: 10, message: 'Username should between 2 to 10 characters', trigger: 'blur' }
         ],
         pass: [
           { required: true, message: 'Please enter password', trigger: 'blur' },
-          { min: 2, max: 18, message: 'The length of password should between 2 to 18 characters', trigger: 'blur' }
+          { min: 2, max: 18, message: 'Password should between 2 to 18 characters', trigger: 'blur' }
         ]
       }
     }
@@ -142,8 +142,9 @@ export default {
 
 :deep(.el-form-item__error)
 {
-  margin-left: 30px;
+  margin-left: 60px;
 }
+
 .el-input
 {
   margin-left: 30px;
