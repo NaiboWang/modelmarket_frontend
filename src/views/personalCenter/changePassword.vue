@@ -103,7 +103,6 @@ export default {
         }).then(async () => {
           const info = await this.$axios.post('changePassword', this.changePasswordForm);
           if(info){
-            this.$message.success('Password Change Success, please log in!');
             this.$router.push("/login");
           }
         }).catch(() => {});

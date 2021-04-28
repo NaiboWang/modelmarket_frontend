@@ -207,8 +207,6 @@ export default {
         }
       });
       if(info){
-        this.$message.success(info.msg);
-      }else{
         row.status = !status;
       }
     }

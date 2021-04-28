@@ -69,6 +69,12 @@ service.interceptors.response.use(
                 router.push("/login"); //When not logged in, return to home page.
             }
             return false;
+        } else if('msg' in response.data){
+            ElMessage({
+                message: response.data.msg,
+                type: 'success',
+                center: true
+            });
         }
         return response.data;
     },

@@ -153,21 +153,16 @@ export default {
           "status":status,
         }
       });
-      if(info){
-        this.$message.success(info.msg);
-      }else{
+      if(!info){
         row.status = !status;
       }
     },
     resetPassword: async function(id){
-      let info = await this.$axios.get("resetPassword",{
+      await this.$axios.get("resetPassword",{
         params:{
           "id":id,
         }
       });
-      if(info){
-        this.$message.success(info.msg);
-      }
     },
   },
 }

@@ -117,7 +117,6 @@ export default {
         }).then(async () => {
           const info = await this.$axios.post('register', this.registerForm);
           if (info) {
-            this.$message.success('Register Success, please log in!');
             this.$router.push("/login");
           }
         }).catch(() => {

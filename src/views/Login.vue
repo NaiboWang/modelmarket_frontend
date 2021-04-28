@@ -72,7 +72,6 @@ export default {
         }
         const info = await this.$axios.post('login', this.loginForm);
         if(info){
-          this.$message.success('Login Success!');
           this.$router.push(this.$store.state.backRef);
         }
       })
