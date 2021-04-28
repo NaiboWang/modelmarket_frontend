@@ -206,7 +206,7 @@ export default {
           "status":status,
         }
       });
-      if(info){
+      if(!info){
         row.status = !status;
       }
     }
