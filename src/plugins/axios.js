@@ -8,10 +8,9 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import store from '../store'
 
-const localAddress='http://192.168.163.129:8080/';
+const localAddress='http://localhost/modelmarket_backend/';
 // eslint-disable-next-line no-unused-vars
 const remoteAddress='http://xtra3090.d2.comp.nus.edu.sg/modelmarket_backend/';
-
 // 创建axios实例
 const service = axios.create({
     // api的base_url
@@ -20,7 +19,6 @@ const service = axios.create({
     withCredentials: true,
     timeout: 15000 // 请求超时时间
 });
-
 // request 请求拦截器
 service.interceptors.request.use(
     config => {

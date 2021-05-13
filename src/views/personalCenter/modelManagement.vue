@@ -77,8 +77,22 @@
       </el-form-item>
 <!--      控制form规则的是item不是里面的内容-->
       <el-form-item style="text-align: left" :label="''" prop="filename">
-        <template v-slot:label>File Name at Server <br></template>
-        <el-link type="primary" target="_blank"  :underline="false" :href="$axios.defaults.baseURL+'downloadModel?type=1&id='+$route.params.id">{{modelFilename}}</el-link>
+        <template v-slot:label>File Name at Server</template>
+        <el-link type="primary" target="_blank" v-if="$route.params.id!=-1&&modelInfoForm.filename!=''" :underline="false" :href="$axios.defaults.baseURL+'downloadModel?type=1&id='+$route.params.id">{{modelFilename}}</el-link><span v-else>{{modelFilename}}</span>
+      </el-form-item>
+      <el-form-item style="text-align: left" label="">
+        <template v-slot:label><p style="line-height: 130%">Model Structure <br> (Click to Zoom)</p></template>
+          <el-link type="primary" target="_blank" v-if="picURL!=''" :underline="false" :href="picURL">
+            <el-image
+                :src="picURL"
+                style="max-height:250px;overflow: auto"
+                fit="scale-down">
+            </el-image>
+        </el-link>
+        <div v-else>
+          Wait for uploading...
+        </div>
+
       </el-form-item>
       <el-form-item style="text-align: left" label="Status" prop="status">
         <el-switch  v-model="modelInfoForm.status">
@@ -90,6 +104,7 @@
       <el-form-item v-if="$route.params.id!=-1" label="Updated Time" prop="updated_time">
         <el-input v-model="modelInfoForm.updated_time" disabled></el-input>
       </el-form-item>
+
     </el-form>
     <el-button type="primary" v-if="$store.state.userRole=='user'" size="medium" @click="uploadModel">{{ $route.params.id == -1 ? "Add New Model" : "Update Model" }}
     </el-button>
@@ -128,17 +143,23 @@ export default {
           }
         });
         this.modelInfoForm = modelInfo.data;
+        this.picURL = this.staticURL + 'pics/' + modelInfo.data["structurePic"];
       }
     },
     handleSuccess(response, file, fileList) {
       if (response) {
         this.$message.success("Upload Success!");
         this.modelInfoForm.filename = response["filename"];
-        console.log(fileList);
+        setTimeout(() => {
+          this.picURL = this.staticURL + 'pics/' + response["structurePic"];
+          this.modelInfoForm.structurePic = response["structurePic"];
+        }, 1000);
+        console.log(this.picURL);
       }
     },
     handleRemove(file, fileList) {
       this.modelInfoForm.filename = "";
+      this.picURL="";
     },
     // 删除对应的参数可选项
     handleClose (i, row) {
@@ -162,7 +183,7 @@ export default {
               //这里得出个结论，如果push之后id会变但是不会重新执行getModel函数因为组件没有重新加载，而且就算push之后下面的函数还是在原来id为-1的时候执行的，所以函数返回$route.params.id还是-1！
               this.$router.push("/manageModel/"+info["id"]);
               await this.getModel(info["id"]);
-            }else {
+            } else {
               this.$message.success('Model Update Success!');
               await this.getModel();
             }
@@ -187,6 +208,7 @@ export default {
     return {
       inputVisible:false,
       inputValue:"",
+      picURL: '',
       options: [
         {
           value: "sklearn",
@@ -205,6 +227,7 @@ export default {
         tags: [],
         filename: "",
         price: 0,
+        structurePic:"",
         status: true,
         created_time:"",
         updated_time:"",
@@ -229,7 +252,7 @@ export default {
   computed:{
     modelFilename(){
       if(this.modelInfoForm.filename==""){
-        return "Waiting for upload..."
+        return "Wait for uploading..."
       }else{
         return this.modelInfoForm.filename;
       }
@@ -242,9 +265,11 @@ export default {
 .el-tag {
   margin-right: 8px;
 }
+
 .input-new-tag {
   width: 200px;
 }
+
 .button-new-tag {
   height: 32px;
   line-height: 30px;

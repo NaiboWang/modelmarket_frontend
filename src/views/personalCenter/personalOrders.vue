@@ -246,7 +246,13 @@ export default {
   // },
   watch: {
     // 如果路由有变化，会再次执行该方法，完成组件复用功能
-    "$route": "getOrders"
+    // 需要判断下是否跳转到其他页面了，如果是就不去执行getOrders，不然会报错
+    "$route": function (newValue, oldVaule)
+    {
+      if(newValue.path.includes("Orders")){
+        this.getOrders();
+      }
+    }
   }
 
 }

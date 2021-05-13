@@ -53,6 +53,21 @@
             <td>{{ modelInfo["created_time"] }}</td>
           </tr>
           <tr>
+            <td style="text-align: right">Model Structure:</td>
+            <td>
+              <el-image
+                  :src="clickToSee"
+                  :preview-src-list="[picURL]"
+                  fit="scale-down">
+                <template #error>
+                  <div class="image-slot">
+                    Sorry but the we didn't find the structure picture!
+                  </div>
+                </template>
+              </el-image>
+            </td>
+          </tr>
+          <tr>
             <td style="text-align: right">Model Price:</td>
             <td style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</td>
           </tr>
@@ -102,6 +117,7 @@ export default {
         }
       });
       this.modelInfo = modelInfo.data;
+      this.picURL = this.staticURL + 'pics/' + modelInfo.data["structurePic"];
       //Show the purchase dialogue
       if (this.$route.query["buy"] == "true") {
         this.dialogFormVisible = true;
@@ -127,7 +143,6 @@ export default {
           }
         });
         if (info) {
-          this.$message.success('Purchase Success, please proceed to process it in your personal center!');
           await this.getModel();
           this.dialogFormVisible = false;
         }
@@ -139,9 +154,11 @@ export default {
     return {
       modelInfo: {},
       dialogFormVisible: false,
+      clickToSee: this.staticURL + 'pics/click.png',
       userInfo: {
         "deposit": 0,
       },
+      picURL:"",
       form: {
         id: 0,
         price: 0,

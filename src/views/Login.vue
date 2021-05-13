@@ -16,7 +16,7 @@
           class="login_form"
         >
           <el-form-item label="Username" prop="username">
-            <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+            <el-input v-model="loginForm.username" v-on:keyup.enter="login" prefix-icon="iconfont icon-user"></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="pass">
             <el-input
@@ -72,7 +72,12 @@ export default {
         }
         const info = await this.$axios.post('login', this.loginForm);
         if(info){
-          this.$router.push(this.$store.state.backRef);
+          try {
+            this.$router.push(this.$store.state.backRef);
+          }
+          catch(err){
+            this.$router.push('/');
+          }
         }
       })
     }

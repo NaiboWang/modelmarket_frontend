@@ -74,17 +74,37 @@
         background
     ></el-pagination>
   </el-card>
+  <el-dialog title="Set Backend address" v-model="dialogFormVisible">
+    <el-form>
+      <el-form-item label="BackEnd Address">
+        <el-input v-model="backEndAddress" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="setAddress">Set!</el-button>
+    </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
 export default {
   name: "modelList",
   async created() {
+    let backend = window.sessionStorage.getItem("backend");
+    console.log(backend);
+    // if(backend == null){
+    //   this.dialogFormVisible = true;
+    // }
+    // this.$axios.defaults.baseURL = "http://xtra3090.d2.comp.nus.edu.sg:8086/modelmarket_backend/";
     await this.getModels();
   },
   data() {
     return {
       models: [],
+      dialogFormVisible:false,
+      backEndAddress:"http://xtra3090.d2.comp.nus.edu.sg:8086",
       queryInfo: {
         query: '',
         fields: ["modelName"],
@@ -119,6 +139,13 @@ export default {
     };
   },
   methods: {
+    setAddress: function(){
+        window.sessionStorage.setItem("backend","true");
+        this.$axios.defaults.baseURL = this.backEndAddress + '/modelmarket_backend/';
+        this.$message.success("Backend Address set success!");
+        this.dialogFormVisible = false;
+        this.getModels();
+    },
     viewModel(id,buy=false) {
       let newPage = this.$router.resolve({
         path: '/viewModel/'+id,
