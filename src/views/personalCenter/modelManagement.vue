@@ -82,7 +82,7 @@
       </el-form-item>
       <el-form-item style="text-align: left" label="">
         <template v-slot:label><p style="line-height: 130%">Model Structure <br> (Click to Zoom)</p></template>
-          <el-link type="primary" target="_blank" v-if="picURL!=''" :underline="false" :href="picURL">
+          <el-link type="primary" target="_blank" v-if="picURL&& picURL.indexOf('undefined')<=0" :underline="false" :href="picURL">
             <el-image
                 :src="picURL"
                 style="max-height:250px;overflow: auto"

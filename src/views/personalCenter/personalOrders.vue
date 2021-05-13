@@ -120,7 +120,7 @@ export default {
         fields: ["modelName"],
         pageNum: 1,
         pageSize: 10,
-        sortProp: "updated_time",
+        sortProp: "purchased_time",
         order: -1,
       },
       queryFields: [],

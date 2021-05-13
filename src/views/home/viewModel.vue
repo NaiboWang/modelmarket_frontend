@@ -5,33 +5,31 @@
   </el-breadcrumb>
 
   <el-card>
-
-
     <el-row>
-      <el-col :span="6"></el-col>
-      <el-col :span="12" style="text-align: left">
+<!--      <el-col :span="6"></el-col>-->
+      <el-col :span="24" style="text-align: left">
         <h2 style="text-align: center">Model Details</h2>
-        <table style="margin:0 auto">
+        <table style="margin:0 auto;width:100%">
           <tr>
-            <td style="text-align: right">Model Name:</td>
+            <td>Model Name:</td>
             <td>{{ modelInfo["modelName"] }}</td>
           </tr>
           <tr>
-            <td style="text-align: right">Model Author:</td>
+            <td>Model Author:</td>
             <td>{{ modelInfo["author"] }}</td>
           </tr>
           <tr>
-            <td style="text-align: right">Model Framework:</td>
+            <td>Model Framework:</td>
             <td>{{ modelInfo["modelFramework"] }}</td>
           </tr>
           <tr>
-            <td style="text-align: right">Model Description:</td>
+            <td>Model Description:</td>
             <td style="word-wrap: break-word;word-break: break-all;overflow: hidden;max-height: 100px;">
-              {{ modelInfo["modelDescription"] }}
+              <div style="width: 80%">{{ modelInfo["modelDescription"] }}</div>
             </td>
           </tr>
           <tr>
-            <td style="text-align: right">Tags:</td>
+            <td style="vertical-align: middle">Tags:</td>
             <td style="word-wrap: break-word;word-break: break-all;overflow: hidden;max-height: 100px;">
               <el-tag
                   v-for="(item, i) in modelInfo['tags']"
@@ -41,34 +39,34 @@
             </td>
           </tr>
           <!--          <tr>-->
-          <!--            <td width="200px" style="text-align: right">Model File Name:</td>-->
+          <!--            <td width="200px">Model File Name:</td>-->
           <!--            <td>{{ modelInfo["filename"] }}</td>-->
           <!--          </tr>-->
           <tr>
-            <td style="text-align: right">Update Time:</td>
+            <td>Update Time:</td>
             <td>{{ modelInfo["updated_time"] }}</td>
           </tr>
           <tr>
-            <td style="text-align: right">Create Time:</td>
+            <td>Create Time:</td>
             <td>{{ modelInfo["created_time"] }}</td>
           </tr>
           <tr>
-            <td style="text-align: right">Model Structure:</td>
+            <td>Model Structure:<br>(Click to Zoom)</td>
             <td>
-              <el-image
-                  :src="clickToSee"
-                  :preview-src-list="[picURL]"
-                  fit="scale-down">
-                <template #error>
-                  <div class="image-slot">
-                    Sorry but the we didn't find the structure picture!
-                  </div>
-                </template>
-              </el-image>
+              <el-link type="primary" target="_blank" v-if="picURL && picURL.indexOf('undefined')<=0" :underline="false" :href="picURL">
+                <el-image
+                    :src="picURL"
+                    style="max-height:250px;overflow: auto"
+                    fit="scale-down">
+                </el-image>
+              </el-link>
+              <div v-else>
+                Sorry, the model structure is unavailable.
+              </div>
             </td>
           </tr>
           <tr>
-            <td style="text-align: right">Model Price:</td>
+            <td>Model Price:</td>
             <td style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</td>
           </tr>
         </table>
@@ -78,7 +76,7 @@
           </el-button>
         </div>
       </el-col>
-      <el-col :span="6"></el-col>
+<!--      <el-col :span="6"></el-col>-->
     </el-row>
   </el-card>
   <el-dialog title="Buy Model" v-model="dialogFormVisible" @open="getUserInfo">
@@ -169,6 +167,13 @@ export default {
 </script>
 
 <style scoped>
+tr td:first-child{
+  text-align: right;
+  font-weight:bold;
+  vertical-align: text-top;
+  width:50%
+}
+
 td {
   padding-top: 10px;
   padding-left: 5px;
