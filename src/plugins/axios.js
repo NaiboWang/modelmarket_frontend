@@ -10,14 +10,14 @@ import store from '../store'
 
 const localAddress='http://localhost/modelmarket_backend/';
 // eslint-disable-next-line no-unused-vars
-const remoteAddress='http://xtra3090.d2.comp.nus.edu.sg/modelmarket_backend/';
+const remoteAddress='https://xtra3090.d2.comp.nus.edu.sg/modelmarket_backend/';
 // 创建axios实例
 const service = axios.create({
     // api的base_url
     // baseURL: process.env.VUE_APP_URL, // 本地-后端解决跨域后
     baseURL: remoteAddress,
     withCredentials: true,
-    timeout: 15000 // 请求超时时间
+    timeout: 999000 // 请求超时时间
 });
 // request 请求拦截器
 service.interceptors.request.use(

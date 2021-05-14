@@ -18,5 +18,5 @@ app.use(store).use(router);
 app.use(ElementPlus,{locale});
 app.config.globalProperties.$axios=axios;//配置全局属性
 app.config.globalProperties.waitingList = waitingList;
-app.config.globalProperties.staticURL = 'http://xtra3090.d2.comp.nus.edu.sg/modelmarket/'; //配置全局静态文件地址，如图片
+app.config.globalProperties.staticURL = axios.defaults.baseURL.replace("_backend",""); //配置全局静态文件地址，如图片
 app.mount('#app');
