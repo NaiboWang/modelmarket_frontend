@@ -4,8 +4,8 @@ module.exports = {
         config
             .plugin('html')
             .tap(args => {
-                args[0].title= 'Machine Learning Model Market'
+                args[0].title = 'Machine Learning Model Market'
                 return args
             })
-    }
+    },
 }

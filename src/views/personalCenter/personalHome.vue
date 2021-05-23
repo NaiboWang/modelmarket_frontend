@@ -6,7 +6,7 @@
         <span>Machine Learning Model Market</span>
       </div>
       <div class="personalInfo">
-        <span>Hello, {{ userInfo.username }}!</span>
+        <span>Hello, {{ $store.state.userInfo.nickname }}!</span>
 
         <el-button type="primary" @click="$router.push('/')">Home Page</el-button>
         <el-button @click="logout">Logout</el-button>
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-
+import getIdentity from "@/store/userInfo";
 export default {
   name: 'personalHome',
   async created() {
@@ -74,8 +74,7 @@ export default {
       this.$router.push("/");
     },
     getIdentity: async function () {
-      let userInfo = await this.$axios.get("getIdentity");
-      this.$store.commit("setUserRole",userInfo.role);
+      let userInfo = await getIdentity();
       if (userInfo.role == "user") {
         this.menuList = [
           {
@@ -163,7 +162,6 @@ export default {
         this.$message.error('Sorry, you have not logged in or you are not authorised user!');
         this.$router.push("/");
       }
-      this.userInfo = userInfo;
     },
   },
   computed: {

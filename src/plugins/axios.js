@@ -8,14 +8,11 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import store from '../store'
 
-const localAddress='http://localhost/modelmarket_backend/';
-// eslint-disable-next-line no-unused-vars
-const remoteAddress='https://xtra3090.d2.comp.nus.edu.sg/modelmarket_backend/';
 // 创建axios实例
 const service = axios.create({
     // api的base_url
     // baseURL: process.env.VUE_APP_URL, // 本地-后端解决跨域后
-    baseURL: remoteAddress,
+    baseURL: process.env.VUE_APP_BACKEND_URL,
     withCredentials: true,
     timeout: 999000 // 请求超时时间
 });

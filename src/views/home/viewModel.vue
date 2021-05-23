@@ -6,54 +6,49 @@
 
   <el-card>
     <el-row>
-<!--      <el-col :span="6"></el-col>-->
-      <el-col :span="24" style="text-align: left">
+      <el-col :span="1"></el-col>
+      <el-col :span="22" style="text-align: left">
         <h2 style="text-align: center">Model Details</h2>
-        <table style="margin:0 auto;width:100%">
-          <tr>
-            <td>Model Name:</td>
-            <td>{{ modelInfo["modelName"] }}</td>
-          </tr>
-          <tr>
-            <td>Model Author:</td>
-            <td>{{ modelInfo["author"] }}</td>
-          </tr>
-          <tr>
-            <td>Model Framework:</td>
-            <td>{{ modelInfo["modelFramework"] }}</td>
-          </tr>
-          <tr>
-            <td>Model Description:</td>
-            <td style="word-wrap: break-word;word-break: break-all;overflow: hidden;max-height: 100px;">
-              <div style="width: 80%">{{ modelInfo["modelDescription"] }}</div>
-            </td>
-          </tr>
-          <tr>
-            <td style="vertical-align: middle">Tags:</td>
-            <td style="word-wrap: break-word;word-break: break-all;overflow: hidden;max-height: 100px;">
+        <div class="content">
+          <div>
+            <p class="title">Model Name</p>
+            <p>{{ modelInfo["modelName"] }}</p>
+          </div>
+          <div>
+            <p class="title">Author</p>
+            <p>{{ modelInfo["author"] }}</p>
+          </div>
+          <div>
+            <p class="title">Original Framework</p>
+            <p>{{ modelInfo["modelFramework"] }}</p>
+          </div>
+          <div>
+            <p class="title">Description</p>
+            <p>{{ modelInfo["modelDescription"] }}</p>
+            <p v-if='modelInfo["modelDescription"]==""'>No description.</p>
+          </div>
+          <div>
+            <p class="title">Tags</p>
+            <div>
               <el-tag
                   v-for="(item, i) in modelInfo['tags']"
                   :key="i"
-              >{{ item }}
-              </el-tag>
-            </td>
-          </tr>
-          <!--          <tr>-->
-          <!--            <td width="200px">Model File Name:</td>-->
-          <!--            <td>{{ modelInfo["filename"] }}</td>-->
-          <!--          </tr>-->
-          <tr>
-            <td>Update Time:</td>
-            <td>{{ modelInfo["updated_time"] }}</td>
-          </tr>
-          <tr>
-            <td>Create Time:</td>
-            <td>{{ modelInfo["created_time"] }}</td>
-          </tr>
-          <tr>
-            <td>Model Structure:<br>(Click to Zoom)</td>
-            <td>
-              <el-link type="primary" target="_blank" v-if="picURL && picURL.indexOf('undefined')<=0" :underline="false" :href="picURL">
+                  style="margin-top:20px"
+              >{{ item }}</el-tag>
+              <p v-if="!tag">No tags</p>
+            </div>
+          </div>
+          <div>
+            <p class="title">Model Price</p>
+            <p style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</p>
+            <el-button type="warning" icon="el-icon-shopping-cart-2" size="medium" @click="dialogFormVisible = true">Buy
+              Model
+            </el-button>
+          </div>
+          <div>
+            <div class="title">Model Structure (Click to Zoom)</div>
+            <div style="margin-top:20px">
+              <el-link type="primary" target="_blank" v-if="picURL && picURL.indexOf('undefined')<0 && picURL.indexOf('301')<0" :underline="false" :href="picURL">
                 <el-image
                     :src="picURL"
                     style="max-height:250px;overflow: auto"
@@ -63,17 +58,34 @@
               <div v-else>
                 Sorry, the model structure is unavailable.
               </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Model Price:</td>
-            <td style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</td>
-          </tr>
-        </table>
+            </div>
+          </div>
+          <div>
+            <p class="title">Original Framework</p>
+            <p>{{ modelInfo["modelFramework"] }}</p>
+          </div>
+          <div>
+            <p class="title">Update Time</p>
+            <p>{{ modelInfo["updated_time"] }}</p>
+          </div>
+          <div>
+            <p class="title">Create Time</p>
+            <p>{{ modelInfo["created_time"] }}</p>
+          </div>
+          <div>
+
+            <p class="title" style="margin-bottom: 5px">Other Details</p>
+            <p v-if='modelInfo["howToRunAndDetails"]==""||modelInfo["howToRunAndDetails"]=="\n"'>No other details</p>
+          </div>
+          <div>
+
+          </div>
+          <div id="preview" style="padding-left:0"></div>
+<!--          <div id="outline"></div>-->
+        </div>
+
         <div style="text-align: center;margin-top: 15px">
-          <el-button type="warning" icon="el-icon-shopping-cart-2" size="medium" @click="dialogFormVisible = true">Buy
-            Model
-          </el-button>
+
         </div>
       </el-col>
 <!--      <el-col :span="6"></el-col>-->
@@ -102,6 +114,65 @@
 </template>
 
 <script>
+
+import Vditor from "vditor";
+
+import "vditor/src/assets/scss/index.scss";
+
+const initOutline = () => {
+  const headingElements = []
+  Array.from(document.getElementById('preview').children).forEach((item) => {
+    if (item.tagName.length === 2 && item.tagName !== 'HR' && item.tagName.indexOf('H') === 0) {
+      headingElements.push(item)
+    }
+  })
+
+  let toc = []
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY
+    toc = []
+    headingElements.forEach((item) => {
+      toc.push({
+        id: item.id,
+        offsetTop: item.offsetTop,
+      })
+    })
+
+    const currentElement = document.querySelector('.vditor-outline__item--current')
+    for (let i = 0, iMax = toc.length; i < iMax; i++) {
+      if (scrollTop < toc[i].offsetTop - 30) {
+        if (currentElement) {
+          currentElement.classList.remove('vditor-outline__item--current')
+        }
+        let index = i > 0 ? i - 1 : 0
+        document.querySelector('span[data-target-id="' + toc[index].id + '"]').classList.add('vditor-outline__item--current')
+        break
+      }
+    }
+  })
+}
+let mkd = markdown => {
+  Vditor.preview(document.getElementById('preview'),
+      markdown, {
+        speech: {
+          enable: true,
+        },
+        anchor: 1,
+        after () {
+          if (window.innerWidth <= 768) {
+            return
+          }
+          const outlineElement = document.getElementById('outline')
+          Vditor.outlineRender(document.getElementById('preview'), outlineElement)
+          if (outlineElement.innerText.trim() !== '') {
+            outlineElement.style.display = 'block'
+            initOutline()
+          }
+        },
+      })
+}
+
+
 export default {
   name: "viewModel",
   async created() {
@@ -116,6 +187,9 @@ export default {
       });
       this.modelInfo = modelInfo.data;
       this.picURL = this.staticURL + 'pics/' + modelInfo.data["structurePic"];
+      this.tag = modelInfo.data['tags'].length > 0;
+      console.log(this.modelInfo)
+      mkd(modelInfo.data.howToRunAndDetails);
       //Show the purchase dialogue
       if (this.$route.query["buy"] == "true") {
         this.dialogFormVisible = true;
@@ -157,6 +231,7 @@ export default {
         "deposit": 0,
       },
       picURL:"",
+      tag: false,
       form: {
         id: 0,
         price: 0,
@@ -167,9 +242,16 @@ export default {
 </script>
 
 <style scoped>
+.content{
+  min-width: 900px;
+  margin: 0 auto;
+  max-width: 1400px;
+  font-size: 18px;
+}
+
 tr td:first-child{
   text-align: right;
-  font-weight:bold;
+  font-weight: bold;
   vertical-align: text-top;
   width:50%
 }
@@ -177,5 +259,13 @@ tr td:first-child{
 td {
   padding-top: 10px;
   padding-left: 5px;
+}
+.title{
+  font-weight: bold;
+  margin-top:20px;
+  margin-bottom:-10px;
+}
+p{
+  line-height: 20px;
 }
 </style>

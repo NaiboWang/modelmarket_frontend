@@ -6,9 +6,9 @@
         <span>Machine Learning Model Market</span>
 
       </div>
-      <div class="personalInfo" v-if="userInfo.role !='guest'" >
-        <span>Hello, {{userInfo.username}}!</span>
-        <el-button type="primary" @click="$router.push('/personalHome')">{{userInfo.role =='manager'?'Management Center':'Personal Center'}}</el-button>
+      <div class="personalInfo" v-if="$store.state.userInfo.role !='guest'" >
+        <span>Hello, {{$store.state.userInfo.nickname}}!</span>
+        <el-button type="primary" @click="$router.push('/personalHome')">{{$store.state.userInfo.role =='manager'?'Management Center':'Personal Center'}}</el-button>
         <el-button  @click="logout">Logout</el-button>
       </div>
       <el-button type="primary" v-else @click="$router.push('/login')">Login</el-button>
@@ -21,27 +21,21 @@
 </template>
 
 <script>
-
+import getIdentity from "@/store/userInfo";
 export default {
   name: 'Home',
   async created() {
-    await this.getIdentity();
+    await getIdentity();
   },
   data() {
     return {
-      userInfo:{role:"guest", username:"guest"},
     };
   },
   methods: {
     logout: async function (){
       await this.$axios.get("logout");
       this.waitingList.clear();
-      let userInfo = await this.getIdentity();
-      this.$store.commit("setUserRole",userInfo.role);
-    },
-    getIdentity: async function(){
-      let userInfo = await this.$axios.get("getIdentity");
-      this.userInfo = userInfo;
+      await getIdentity();
     },
   }
 }

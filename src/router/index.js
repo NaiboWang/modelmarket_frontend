@@ -8,7 +8,7 @@ import personalOrders from "@/views/personalCenter/personalOrders";
 import modelEnsemble from "@/views/personalCenter/modelEnsemble";
 import changePassword from "@/views/personalCenter/changePassword";
 import basicInfo from "@/views/personalCenter/basicInfo";
-import managementHome from "@/views/management_center/managementHome";
+// import managementHome from "@/views/management_center/managementHome";
 import charge from "@/views/personalCenter/charge";
 import modelManagement from "@/views/personalCenter/modelManagement";
 import viewOrder from "@/views/personalCenter/viewOrder";
@@ -59,17 +59,17 @@ const routes = [
             {path: '/userManagement', component: userList},
         ]
     },
-    {
-        path: '/managementHome',
-        name: 'managementHome',
-        component: managementHome,
-        redirect: '/managementInfo',
-        children: [
-            {path: '/managementModels', component: personalModelList},
-            {path: '/managementPassword', component: changePassword},
-            {path: '/managementInfo', component: basicInfo},
-        ]
-    },
+    // {
+    //     path: '/managementHome',
+    //     name: 'managementHome',
+    //     component: managementHome,
+    //     redirect: '/managementInfo',
+    //     children: [
+    //         {path: '/managementModels', component: personalModelList},
+    //         {path: '/managementPassword', component: changePassword},
+    //         {path: '/managementInfo', component: basicInfo},
+    //     ]
+    // },
 ]
 
 const router = createRouter({

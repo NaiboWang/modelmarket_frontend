@@ -18,6 +18,9 @@
           <el-form-item label="Username" prop="username">
             <el-input v-model="registerForm.username" prefix-icon="iconfont icon-user"></el-input>
           </el-form-item>
+          <el-form-item label="Nickname" prop="nickname">
+            <el-input v-model="registerForm.nickname" prefix-icon="iconfont icon-user"></el-input>
+          </el-form-item>
           <el-form-item label="Password" prop="pass">
             <el-input
                 v-model="registerForm.pass"
@@ -68,6 +71,8 @@ export default {
     var validateUsername = (rule, value, callback) => {
       if (value.includes(' ')) {
         callback(new Error('User name cannot contain space'));
+      }else if(!((value[0]>='a'&&value[0]<='z')||(value[0]>='A'&&value[0]<='Z'))){
+        callback(new Error('User name must start with a letter'));
       } else {
         callback();
       }
@@ -75,6 +80,7 @@ export default {
     return {
       registerForm: {
         username: '',
+        nickname: '',
         pass: '',
         confirmPass: '',
       },
@@ -83,7 +89,11 @@ export default {
         username: [
           {validator: validateUsername, trigger: 'blur'},
           {required: true, message: 'Please enter username', trigger: 'blur'},
-          {min: 2, max: 10, message: 'Username should between 2 to 10 characters', trigger: 'blur'}
+          {min: 2, max: 18, message: 'Username should between 2 to 18 characters', trigger: 'blur'}
+        ],
+        nickname: [
+          {required: true, message: 'Please enter nickname', trigger: 'blur'},
+          {min: 2, max: 18, message: 'Nickname should between 2 to 18 characters', trigger: 'blur'}
         ],
         pass: [
           {validator: validatePass, trigger: 'blur'},
@@ -115,7 +125,10 @@ export default {
           cancelButtonClass: 'btn-custom-cancel',
           type: 'success'
         }).then(async () => {
-          const info = await this.$axios.post('register', this.registerForm);
+          let registerFormEnctrypted = this.$lodash.clone(this.registerForm);
+          registerFormEnctrypted.pass = this.$jse.encrypt(this.registerForm.pass);
+          registerFormEnctrypted.confirmPass = this.$jse.encrypt(this.registerForm.confirmPass);
+          const info = await this.$axios.post('register', registerFormEnctrypted);
           if (info) {
             this.$router.push("/login");
           }
@@ -145,7 +158,7 @@ export default {
   position: absolute;
   left: 50%;
   top: 50%;
-  -webkit-transform: translate(-60%, -50%);
+  -webkit-transform: translate(-60%, -80%);
   background-color: #fff;
 
   .avatar_box {
@@ -177,7 +190,7 @@ export default {
 
 .login_form {
   position: absolute;
-  bottom: 60px;
+  //bottom: 60px;
   width: 100%;
   padding: 0 20px;
   margin-top: 20px;

@@ -101,7 +101,11 @@ export default {
           cancelButtonClass: 'btn-custom-cancel',
           type: 'success'
         }).then(async () => {
-          const info = await this.$axios.post('changePassword', this.changePasswordForm);
+          let changePasswordFormEncrypted = this.$lodash.clone(this.changePasswordForm);
+          changePasswordFormEncrypted.pass = this.$jse.encrypt(this.changePasswordForm.pass);
+          changePasswordFormEncrypted.confirmPass = this.$jse.encrypt(this.changePasswordForm.confirmPass);
+          changePasswordFormEncrypted.oldPass = this.$jse.encrypt(this.changePasswordForm.oldPass);
+          const info = await this.$axios.post('changePassword', changePasswordFormEncrypted);
           if(info){
             this.$router.push("/login");
           }

@@ -30,7 +30,8 @@
     <!-- 表格数据 -->
     <el-table ref="tableRef" :data="users" @sort-change="sortData" border stripe class="left_layout">
       <el-table-column header-align="center" :sortable="'custom'" align="center" label="ID" type="index"></el-table-column>
-      <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Name" prop="username"></el-table-column>
+      <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Username" prop="username"></el-table-column>
+      <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Nickname" prop="nickname"></el-table-column>
       <el-table-column header-align="center" :sortable="'custom'" align="center" label="Role" prop="role"></el-table-column>
       <el-table-column header-align="center" align="center" :sortable="'custom'" label="Deposit" prop="deposit"
                        width="130px"></el-table-column>
@@ -102,6 +103,10 @@ export default {
         {
           label: 'User Name',
           value: 'username'
+        },
+        {
+          label: 'Nick Name',
+          value: 'nickname'
         },
         {
           label: 'Role',

@@ -8,44 +8,57 @@
   <el-card>
     <h3>User Info</h3>
     <div class="form_center_layout">
-      <el-form :model="readableUserInfo" label-width="130px" disabled>
+      <el-form :model="readableUserInfo" label-width="130px" ref="FormRef"
+               :rules="validateFormRules">
         <el-form-item label="Username" prop="username">
-          <el-input v-model="readableUserInfo.username"></el-input>
+          <el-input v-model="readableUserInfo.username" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="Nickname" prop="nickname">
+          <el-input v-model="readableUserInfo.nickname"></el-input>
         </el-form-item>
         <el-form-item label="Role" prop="role">
-          <el-input v-model="readableUserInfo.role"></el-input>
+          <el-input v-model="readableUserInfo.role" disabled></el-input>
         </el-form-item>
         <el-form-item label="Deposit" prop="deposit">
-          <el-input v-model="readableUserInfo.deposit"></el-input>
+          <el-input v-model="readableUserInfo.deposit" disabled></el-input>
         </el-form-item>
         <el-form-item label="Register Time" prop="register_time">
-          <el-input v-model="readableUserInfo.register_time"></el-input>
+          <el-input v-model="readableUserInfo.register_time" disabled></el-input>
         </el-form-item>
         <el-form-item class="disabledClass" v-if="!userInfo.status" label="Status" prop="status">
-          <el-input v-model="readableUserInfo.status"></el-input>
+          <el-input v-model="readableUserInfo.status" disabled></el-input>
         </el-form-item>
         <el-form-item class="enabledClass" v-else label="Status" prop="status">
-          <el-input v-model="readableUserInfo.status"></el-input>
+          <el-input v-model="readableUserInfo.status" disabled></el-input>
         </el-form-item>
       </el-form>
+      <el-button type="primary" @click="changeInfo">Change Info</el-button>
     </div>
   </el-card>
 </template>
 
 <script>
+import getIdentity from "@/store/userInfo";
+
 export default {
   name: "basicInfo",
   async created() {
-    const info = await this.$axios.get('getUserInfo');
-    this.userInfo = info.data;
+    await this.getInfo();
   },
   data() {
     return {
       userInfo: {
         username:"",
+        nickname:"",
         role:"",
         deposit:0,
         status:"",
+      },// 表单验证
+      validateFormRules: {
+        nickname: [
+          {required: true, message: 'Please enter nickname', trigger: 'blur'},
+          {min: 2, max: 18, message: 'Nickname should between 2 to 18 characters', trigger: 'blur'}
+        ],
       }
     }
   },
@@ -57,7 +70,37 @@ export default {
       return info;
     }
   },
-  methods: {}
+  methods: {
+    getInfo: async function(){
+      const info = await this.$axios.get('getUserInfo');
+      this.userInfo = info.data;
+    },
+    changeInfo: function () {
+      this.$refs.FormRef.validate(async valid => {
+        if (!valid) {
+          return false;
+        }
+        this.$confirm(`Do you really want to change user info?`, 'Confirm', {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          cancelButtonClass: 'btn-custom-cancel',
+          type: 'success'
+        }).then(async () => {
+          let info = await this.$axios.get('changeUserInfo', {
+            params: {
+              "nickname": this.userInfo.nickname,
+            }
+          });
+          console.log(info);
+          if (info) {
+            await this.getInfo();
+            await getIdentity();
+          }
+        }).catch(() => {
+        });
+      })
+    },
+  }
 }
 </script>
 

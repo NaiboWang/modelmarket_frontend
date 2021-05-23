@@ -70,7 +70,9 @@ export default {
         if (!valid) {
           return false;
         }
-        const info = await this.$axios.post('login', this.loginForm);
+        let loginFormEnctrypted = this.$lodash.clone(this.loginForm);
+        loginFormEnctrypted.pass = this.$jse.encrypt(this.loginForm.pass);
+        const info = await this.$axios.post('login', loginFormEnctrypted);
         if(info){
           try {
             this.$router.push(this.$store.state.backRef);
