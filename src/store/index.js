@@ -16,6 +16,7 @@ export default createStore({
             '3': 'el-icon-menu icon-align',
             '4': 'iconfont icon-user',
             '5': 'el-icon-s-claim icon-align',
+            '6': 'el-icon-tickets icon-align',
             '41': 'el-icon-info',
             '42': 'el-icon-lock',
             '43': 'el-icon-wallet',

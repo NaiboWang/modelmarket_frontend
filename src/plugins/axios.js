@@ -77,7 +77,7 @@ service.interceptors.response.use(
         NProgress.done();
         console.log(error);
         ElMessage({
-            message: "Cannot connected to the server!",
+            message: "Cannot connect to the server!",
             type: "error",
             duration: 5 * 1000
         });

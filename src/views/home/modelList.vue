@@ -92,8 +92,8 @@
 export default {
   name: "modelList",
   async created() {
-    let backend = window.sessionStorage.getItem("backend");
-    console.log(backend);
+    // let backend = window.sessionStorage.getItem("backend");
+    // console.log(backend);
     // if(backend == null){
     //   this.dialogFormVisible = true;
     // }

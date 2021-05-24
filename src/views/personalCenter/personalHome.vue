@@ -143,6 +143,11 @@ export default {
             authName: "User Management",
           },
           {
+            id:6,
+            path: "/viewLogs",
+            authName: "View Logs",
+          },
+          {
             id: 4,
             authName: "Personal Info",
             children: [

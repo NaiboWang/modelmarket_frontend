@@ -14,6 +14,7 @@ import modelManagement from "@/views/personalCenter/modelManagement";
 import viewOrder from "@/views/personalCenter/viewOrder";
 import viewWaitingList from "@/views/personalCenter/viewWaitingList";
 import userList from "../views/personalCenter/userList";
+import logList from "../views/personalCenter/logList";
 
 const routes = [
     {
@@ -49,6 +50,7 @@ const routes = [
             {path: '/manageModel/:id', component: modelManagement},
             {path: '/personalOrders', component: personalOrders},
             {path: '/soldOrders', component: personalOrders},
+            {path: '/viewLogs', component: logList},
             {path: '/viewOrder/:id', component: viewOrder},
             {path: '/viewSoldOrder/:id', component: viewOrder},
             {path: '/modelEnsemble', component: modelEnsemble},
