@@ -1,7 +1,7 @@
 <template>
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userInfo.role=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Model Management</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
@@ -31,7 +31,7 @@
     <el-table ref="tableRef" :data="models" @sort-change="sortData" border stripe class="left_layout">
       <el-table-column header-align="center" :sortable="'custom'" align="center" label="ID" type="index"></el-table-column>
       <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Name" prop="modelName"></el-table-column>
-      <el-table-column header-align="center" v-if="$store.state.userRole == 'manager'" :sortable="'custom'" align="center" label="Author" prop="author"></el-table-column>
+      <el-table-column header-align="center" v-if="$store.state.userInfo.role == 'manager'" :sortable="'custom'" align="center" label="Author" prop="author"></el-table-column>
       <el-table-column header-align="center" align="center" label="Tags">
         <template v-slot="scope">
           <el-tag
@@ -56,10 +56,10 @@
         </template>
 
       </el-table-column>
-      <el-table-column v-if="$store.state.userRole == 'user'" header-align="center" align="center" label="Operations" width="220px">
+      <el-table-column v-if="$store.state.userInfo.role == 'user'" header-align="center" align="center" label="Operations" width="220px">
         <template v-slot="scope">
-          <el-button type="primary" :icon="$store.state.userRole == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
-                     @click="editModel(`${scope.row.id}`)">{{$store.state.userRole == 'user'?"View/Edit":"View"}}
+          <el-button type="primary" :icon="$store.state.userInfo.role == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
+                     @click="editModel(`${scope.row.id}`)">{{$store.state.userInfo.role == 'user'?"View/Edit":"View"}}
           </el-button>
 <!--          <el-popconfirm-->
 
@@ -83,8 +83,8 @@
       </el-table-column>
       <el-table-column v-else header-align="center" align="center" label="Operations" width="150px">
         <template v-slot="scope">
-          <el-button type="primary" :icon="$store.state.userRole == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
-                     @click="editModel(`${scope.row.id}`)">{{$store.state.userRole == 'user'?"View/Edit":"View"}}
+          <el-button type="primary" :icon="$store.state.userInfo.role == 'user'?'el-icon-edit':'el-icon-view'" size="medium"
+                     @click="editModel(`${scope.row.id}`)">{{$store.state.userInfo.role == 'user'?"View/Edit":"View"}}
           </el-button>
         </template>
       </el-table-column>
@@ -101,7 +101,7 @@
         background
     ></el-pagination>
     <el-row>
-      <el-col v-if="$store.state.userRole=='user'" :span="6">
+      <el-col v-if="$store.state.userInfo.role=='user'" :span="6">
         <el-button style="float: left" type="primary" @click="$router.push('/manageModel/-1')">New Model</el-button>
       </el-col>
     </el-row>
@@ -113,7 +113,7 @@
 export default {
   name: "personalModelList",
   mounted() {
-    if(this.$store.state.userRole=="manager")
+    if(this.$store.state.userInfo.role=="manager")
     {
       this.queryFields.push({label: 'Author',
         value: 'author'});

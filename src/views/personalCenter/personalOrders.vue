@@ -2,12 +2,12 @@
   <!-- 面包屑导航区 -->
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{ path: '/personalHome' }">
-      {{ $store.state.userRole == 'user' ? 'Personal Center' : 'Management Center' }}
+      {{ $store.state.userInfo.role == 'user' ? 'Personal Center' : 'Management Center' }}
     </el-breadcrumb-item>
     <el-breadcrumb-item>Orders</el-breadcrumb-item>
-    <el-breadcrumb-item v-if="$route.path=='/personalOrders'&&$store.state.userRole!='manager'" :to="{ path: '/personalOrders' }">Purchased Orders
+    <el-breadcrumb-item v-if="$route.path=='/personalOrders'&&$store.state.userInfo.role!='manager'" :to="{ path: '/personalOrders' }">Purchased Orders
     </el-breadcrumb-item>
-    <el-breadcrumb-item v-else-if="$store.state.userRole!='manager'" :to="{ path: '/personalOrders' }">Sold Orders</el-breadcrumb-item>
+    <el-breadcrumb-item v-else-if="$store.state.userInfo.role!='manager'" :to="{ path: '/personalOrders' }">Sold Orders</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
     <el-row class="left_layout">
@@ -53,16 +53,16 @@
                        width="130px"></el-table-column>
       <el-table-column :sortable="'custom'" header-align="center" align="center" label="Transaction Price" prop="price"
                        width="110px"></el-table-column>
-      <el-table-column v-if="$store.state.userRole=='manager'" :sortable="'custom'" header-align="center" align="center"
-                       label="Seller" prop="author"
+      <el-table-column v-if="$store.state.userInfo.role=='manager'" :sortable="'custom'" header-align="center" align="center"
+                       label="Seller" prop="nickname"
                        width="110px"></el-table-column>
-      <el-table-column v-if="$route.path=='/soldOrders'||$store.state.userRole=='manager'" :sortable="'custom'"
-                       header-align="center" align="center" label="Buyer" prop="buyer"
+      <el-table-column v-if="$route.path=='/soldOrders'||$store.state.userInfo.role=='manager'" :sortable="'custom'"
+                       header-align="center" align="center" label="Buyer" prop="nickname_buyer"
                        width="150px"></el-table-column>
       <el-table-column :sortable="'custom'" header-align="center" align="center" label="Purchased Time"
                        prop="purchased_time"
                        width="160px"></el-table-column>
-      <el-table-column v-if="$store.state.userRole=='user'" header-align="center" align="center" label="Operations"
+      <el-table-column v-if="$store.state.userInfo.role=='user'" header-align="center" align="center" label="Operations"
                        width="350px">
         <template v-slot="scope">
           <el-button type="primary" v-if="$route.path=='/soldOrders'" icon="el-icon-view" size="medium"
@@ -186,13 +186,13 @@ export default {
           value: 'purchased_time'
         },
       ];
-      if (this.$route.path == "/soldOrders" || this.$store.state.userRole == 'manager') {
+      if (this.$route.path == "/soldOrders" || this.$store.state.userInfo.role == 'manager') {
         this.queryFields.push({
           label: 'Buyer',
               value: 'buyer'
         });
       }
-      if (this.$store.state.userRole == 'manager') {
+      if (this.$store.state.userInfo.role == 'manager') {
         this.queryFields.push({
           label: 'Seller',
           value: 'author'

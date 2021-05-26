@@ -6,7 +6,6 @@ export default createStore({
         backRef: "/",
         activePath: "/personalModelList", //默认激活的标签
         activeManagementPath: "/managementInfo", //默认激活的标签
-        userRole: "user",
         iconObj: {
             '0': 'iconfont-user icon-users',
             '1': 'iconfont icon-tijikongjian',
@@ -38,9 +37,6 @@ export default createStore({
         },
         setActiveManagementPath(state, path) {
             state.activeManagementPath = path;
-        },
-        setUserRole(state, role) {
-            state.userRole = role;
         },
         setUserInfo(state, userInfo) {
             state.userInfo = userInfo;

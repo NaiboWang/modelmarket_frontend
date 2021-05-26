@@ -1,9 +1,9 @@
 <template>
   <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userRole=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/personalHome' }">{{$store.state.userInfo.role=='user'?'Personal Center':'Management Center'}}</el-breadcrumb-item>
     <el-breadcrumb-item>Orders</el-breadcrumb-item>
-    <el-breadcrumb-item v-if="$route.path.includes('viewOrder')&&$store.state.userRole!='manager'" :to="{path:'/personalOrders'}">Purchased Orders</el-breadcrumb-item>
-    <el-breadcrumb-item v-else-if="$store.state.userRole!='manager'" :to="{path:'/soldOrders'}">Sold Orders</el-breadcrumb-item>
+    <el-breadcrumb-item v-if="$route.path.includes('viewOrder')&&$store.state.userInfo.role!='manager'" :to="{path:'/personalOrders'}">Purchased Orders</el-breadcrumb-item>
+    <el-breadcrumb-item v-else-if="$store.state.userInfo.role!='manager'" :to="{path:'/soldOrders'}">Sold Orders</el-breadcrumb-item>
     <el-breadcrumb-item>Order Details</el-breadcrumb-item>
   </el-breadcrumb>
 
@@ -25,7 +25,7 @@
           </tr>
           <tr>
             <td style="text-align: right">Model Author:</td>
-            <td>{{ orderInfo["author"] }}</td>
+            <td>{{ orderInfo["nickname"] }}</td>
           </tr>
           <tr>
             <td style="text-align: right">Model Framework:</td>
@@ -56,6 +56,10 @@
             <td>{{ orderInfo["purchased_time"] }}</td>
           </tr>
           <tr>
+            <td style="text-align: right">Model Buyer:</td>
+            <td>{{ orderInfo["nickname_buyer"] }}</td>
+          </tr>
+          <tr>
             <td style="text-align: right">Model Update Time:</td>
             <td>{{ orderInfo["updated_time"] }}</td>
           </tr>
@@ -79,7 +83,7 @@
         </div>
         <div style="text-align: center;margin-top: 15px">
           <el-button
-              v-if="$store.state.userRole=='user'"
+              v-if="$store.state.userInfo.role=='user'"
               :type="style"
               :icon="icon"
               size="medium"

@@ -16,7 +16,7 @@
           </div>
           <div>
             <p class="title">Author</p>
-            <p>{{ modelInfo["author"] }}</p>
+            <p>{{ modelInfo["nickname"] }}</p>
           </div>
           <div>
             <p class="title">Original Framework</p>
