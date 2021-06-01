@@ -173,7 +173,7 @@ export default {
       //全部删除选项时恢复默认选项
       if (values.length == 0) {
         this.searchDict.fields = [];
-        this.searchDict.fields.push(this.defaultSearchProp);
+        this.searchDict.fields.push(this.params.defaultSearchProp);
       }
     },
     // 分页

@@ -10,30 +10,9 @@
     <el-breadcrumb-item v-else-if="$store.state.userInfo.role!='manager'" :to="{ path: '/personalOrders' }">Sold Orders</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
-    <el-row class="left_layout">
-      <el-col :span="6" style="margin-right:10px">
-        <el-select style="width: 100%" v-model="queryInfo.fields" @change="detectChange" multiple
-                   placeholder="Please choose query fields">
-          <el-option
-              v-for="item in queryFields"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-          </el-option>
-        </el-select>
-      </el-col>
-
-      <el-col :span="10">
-        <el-input v-model="queryInfo.query" @keyup.enter="getOrders" placeholder="please input keywords to search"
-                  clearable>
-          <template #append>
-            <el-button @click="getOrders" icon="el-icon-search"></el-button>
-          </template>
-        </el-input>
-      </el-col>
-    </el-row>
     <!-- 表格数据 -->
-    <el-table ref="tableRef" :data="orders" @sort-change="sortData" border stripe class="left_layout">
+    <search-box :params="searchParams" @get-data="getData" ref="searchBox" :key="refresh">
+    <el-table ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)" border stripe class="left_layout">
       <el-table-column header-align="center" :sortable="'custom'" align="center" label="ID"
                        type="index"></el-table-column>
       <el-table-column header-align="center" :sortable="'custom'" align="center" label="Order Number"
@@ -91,17 +70,7 @@
       </el-table-column>
 
     </el-table>
-    <!-- 分页区域 -->
-    <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        background
-    ></el-pagination>
+    </search-box>
     <!--    {{// updateComponent}}-->
   </el-card>
 </template>
@@ -109,22 +78,50 @@
 <script>
 export default {
   name: "personalOrders",
-  async created() {
-    await this.getOrders();
+  created() {
+    this.init();
   },
   data() {
     return {
-      orders: [],
-      queryInfo: {
-        query: '',
-        fields: ["modelName"],
-        pageNum: 1,
-        pageSize: 10,
+      refresh: true,
+      searchData: [],
+      searchParams: {
+        queryFields: [
+          {
+            label: 'Model Name',
+            value: 'modelName',
+            type: 'text',
+            comment: '',
+          },
+          {
+            label: 'Framework',
+            value: 'modelFramework',
+            type: 'text',
+            comment: '',
+          },
+          {
+            label: 'Price',
+            value: 'price',
+            type: 'number',
+            comment: '',
+          },
+          {
+            label: 'Tag',
+            value: 'tags',
+            type: 'text',
+            comment: '',
+          },
+          {
+            label: 'Update Time',
+            comment: ' (must specify time, not only date)',
+            value: 'updated_time',
+            type: 'datetime',
+          },
+        ],
+        apiAddress: 'querySoldOrders',
         sortProp: "purchased_time",
-        order: -1,
+        defaultSearchProp: "modelName",
       },
-      queryFields: [],
-      total: 0,
       columnWidth:'350px',
     };
   },
@@ -135,25 +132,9 @@ export default {
       })
       window.open(newPage.href, '_blank');
     },
-    sortData: async function (column) {
-      this.queryInfo.sortProp = column.prop;
-      this.queryInfo.pageNum = 1; //排序后回到第一页
-      this.queryInfo.order = column.order == "ascending" ? 1 : -1;
-      await this.getOrders();
-    },
-    getOrders: async function () {
-      let orders;
-      if (this.queryInfo.fields.length == 0) {
-        this.$message.error("Please select at least one query field!");
-        return false;
-      }
-      if (this.$route.path == "/soldOrders") {
-        orders = await this.$axios.post("querySoldOrders", this.queryInfo);
-      } else {
-        orders = await this.$axios.post("queryPurchasedOrders", this.queryInfo);
-      }
+    getData: function (data){
       //为waiting list 添加样式
-      orders.data.map((order) => {
+      data.map((order) => {
         if (this.waitingList.exist(order.id)) {
           order["style"] = "danger";
           order["waitStatus"] = "Remove from Waiting List";
@@ -164,58 +145,70 @@ export default {
           order["icon"] = "el-icon-plus";
         }
       });
-      this.queryFields = [
+      this.searchData = data;
+    },
+    init: async function () {
+      if (this.$route.path == "/soldOrders") {
+        this.searchParams.apiAddress = "querySoldOrders";
+      } else {
+        this.searchParams.apiAddress = "queryPurchasedOrders";
+      }
+      this.searchParams.queryFields = [
         {
           label: 'Order Number',
-          value: 'orderID'
+          value: 'orderID',
+          type: 'text',
+          comment: '',
         },
         {
           label: 'Model Name',
-          value: 'modelName'
+          value: 'modelName',
+          type: 'text',
+          comment: '',
         },
         {
           label: 'Framework',
-          value: 'modelFramework'
+          value: 'modelFramework',
+          type: 'text',
+          comment: '',
+        },
+        {
+          label: 'Price',
+          value: 'price',
+          type: 'number',
+          comment: '',
         },
         {
           label: 'Tag',
-          value: 'tags'
+          value: 'tags',
+          type: 'text',
+          comment: '',
         },
         {
           label: 'Purchased Time',
-          value: 'purchased_time'
+          value: 'purchased_time',
+          type: 'datetime',
+          comment: ' (must specify time, not only date)',
         },
       ];
       if (this.$route.path == "/soldOrders" || this.$store.state.userInfo.role == 'manager') {
-        this.queryFields.push({
+        this.searchParams.queryFields.push({
           label: 'Buyer',
-              value: 'buyer'
+          value: 'buyer',
+          type: 'text',
+          comment: '',
         });
       }
       if (this.$store.state.userInfo.role == 'manager') {
-        this.queryFields.push({
+        this.searchParams.queryFields.push({
           label: 'Seller',
-          value: 'author'
+          value: 'author',
+          type: 'text',
+          comment: '',
         });
         this.columnWidth = '150px';
       }
-      this.orders = orders.data;
-      this.total = orders.total;
-    },
-    // 分页
-    handleSizeChange(newSize) {
-      this.queryInfo.pageSize = newSize;
-      this.getOrders();
-    },
-    handleCurrentChange(newSize) {
-      this.queryInfo.pageNum = newSize;
-      this.getOrders();
-    },
-    detectChange(values) {
-      //全部删除选项时恢复默认选项
-      if (values.length == 0) {
-        this.queryInfo.fields = ["modelName"];
-      }
+      this.refresh = !this.refresh;
     },
     managerWaitingList: function (row) {
       if (row.style == "danger") {
@@ -250,7 +243,7 @@ export default {
     "$route": function (newValue, oldVaule)
     {
       if(newValue.path.includes("Orders")){
-        this.getOrders();
+        this.init();
       }
     }
   }
