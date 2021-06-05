@@ -25,7 +25,8 @@ export default createStore({
         userInfo: {
             nickname: 'guest',
             role: "guest",
-            username: "guest"
+            username: "guest",
+            notifications:0,
         },
     },
     mutations: {

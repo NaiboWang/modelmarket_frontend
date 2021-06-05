@@ -4,7 +4,7 @@
   </el-breadcrumb>
   <el-card>
     <h2>Welcome to Machine Learning Model Market!</h2>
-    <search-box :params="searchParams" @get-data="(data) => searchData = data" ref="searchBox">
+    <search-box :params="searchParams" @get-data="(data) => searchData = data" ref="searchBox" classes="center_layout">
       <el-table ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)" border stripe class="center_layout">
         <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="Name"
@@ -87,7 +87,7 @@ export default {
           },
           {
             label: 'Update Time',
-            comment: ' (must specify time, not only date)',
+            comment: ' (Must specify time, not only date)',
             value: 'updated_time',
             type: 'datetime',
           },
@@ -121,7 +121,7 @@ export default {
   text-align: left;
 }
 
-/deep/ .el-form-item__label {
+:deep(.el-form-item__label) {
   text-align: left !important;
   float: initial !important;
 }

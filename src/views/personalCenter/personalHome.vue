@@ -7,7 +7,10 @@
       </div>
       <div class="personalInfo">
         <span>Hello, {{ $store.state.userInfo.nickname }}!</span>
-
+        <div style="margin-right:20px">
+          <el-button type="info" @click="$router.push('/notifications')" v-if="$store.state.userInfo.notifications==0" icon="el-icon-bell" circle></el-button>
+          <el-button type="danger" @click="$router.push('/notifications')" style="width: 40px;height: 40px" v-else circle>{{$store.state.userInfo.notifications}}</el-button>
+        </div>
         <el-button type="primary" @click="$router.push('/')">Home Page</el-button>
         <el-button @click="logout">Logout</el-button>
       </div>
@@ -55,6 +58,7 @@
 
 <script>
 import getIdentity from "@/store/userInfo";
+
 export default {
   name: 'personalHome',
   async created() {
@@ -138,12 +142,12 @@ export default {
             path: "/personalOrders",
           },
           {
-            id:0,
+            id: 0,
             path: "/userManagement",
             authName: "User Management",
           },
           {
-            id:6,
+            id: 6,
             path: "/viewLogs",
             authName: "View Logs",
           },

@@ -1,94 +1,131 @@
 <template>
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{ path: '/' }">Home Page</el-breadcrumb-item>
-    <el-breadcrumb-item>Model Details</el-breadcrumb-item>
+    <el-breadcrumb-item>Model Information</el-breadcrumb-item>
   </el-breadcrumb>
 
   <el-card>
     <el-row>
-      <el-col :span="1"></el-col>
-      <el-col :span="22" style="text-align: left">
-        <h2 style="text-align: center">Model Details</h2>
-        <div class="content">
-          <div>
-            <p class="title">Model Name</p>
-            <p>{{ modelInfo["modelName"] }}</p>
-          </div>
-          <div>
-            <p class="title">Author</p>
-            <p>{{ modelInfo["nickname"] }}</p>
-          </div>
-          <div>
-            <p class="title">Original Framework</p>
-            <p>{{ modelInfo["modelFramework"] }}</p>
-          </div>
-          <div>
-            <p class="title">Description</p>
-            <p>{{ modelInfo["modelDescription"] }}</p>
-            <p v-if='modelInfo["modelDescription"]==""'>No description.</p>
-          </div>
-          <div>
-            <p class="title">Tags</p>
+      <el-tabs tab-position="left">
+        <el-tab-pane label="Model Information" style="text-align: left">
+
+          <h2 style="text-align: center">Model Details</h2>
+          <div class="content">
             <div>
-              <el-tag
-                  v-for="(item, i) in modelInfo['tags']"
-                  :key="i"
-                  style="margin-top:20px"
-              >{{ item }}</el-tag>
-              <p v-if="!tag">No tags</p>
+              <p class="title">Model Name</p>
+              <p>{{ modelInfo["modelName"] }}</p>
             </div>
-          </div>
-          <div>
-            <p class="title">Model Price</p>
-            <p style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</p>
-            <el-button type="warning" icon="el-icon-shopping-cart-2" size="medium" @click="dialogFormVisible = true">Buy
-              Model
-            </el-button>
-          </div>
-          <div>
-            <div class="title">Model Structure (Click to Zoom)</div>
-            <div style="margin-top:20px">
-              <el-link type="primary" target="_blank" v-if="picURL && picURL.indexOf('undefined')<0 && picURL.indexOf('301')<0" :underline="false" :href="picURL">
-                <el-image
-                    :src="picURL"
-                    style="max-height:250px;overflow: auto"
-                    fit="scale-down">
-                </el-image>
-              </el-link>
-              <div v-else>
-                Sorry, the model structure is unavailable.
+            <div>
+              <p class="title">Author</p>
+              <p>{{ modelInfo["nickname"] }}</p>
+            </div>
+            <div>
+              <p class="title">Original Framework</p>
+              <p>{{ modelInfo["modelFramework"] }}</p>
+            </div>
+            <div>
+              <p class="title">Description</p>
+              <p>{{ modelInfo["modelDescription"] }}</p>
+              <p v-if='modelInfo["modelDescription"]==""'>No description.</p>
+            </div>
+            <div>
+              <p class="title">Tags</p>
+              <div>
+                <el-tag
+                    v-for="(item, i) in modelInfo['tags']"
+                    :key="i"
+                    style="margin-top:20px"
+                >{{ item }}
+                </el-tag>
+                <p v-if="!tag">No tags</p>
               </div>
             </div>
-          </div>
-          <div>
-            <p class="title">Original Framework</p>
-            <p>{{ modelInfo["modelFramework"] }}</p>
-          </div>
-          <div>
-            <p class="title">Update Time</p>
-            <p>{{ modelInfo["updated_time"] }}</p>
-          </div>
-          <div>
-            <p class="title">Create Time</p>
-            <p>{{ modelInfo["created_time"] }}</p>
-          </div>
-          <div>
+            <div>
+              <p class="title">Model Price</p>
+              <p style="color:blue;font-size:20px">SGD {{ modelInfo["price"] }}</p>
+              <el-button type="warning" icon="el-icon-shopping-cart-2" size="medium"
+                         @click="dialogFormVisible = true">Buy
+                Model
+              </el-button>
+            </div>
+            <div>
+              <div class="title">Model Structure (Click to Zoom)</div>
+              <div style="margin-top:20px">
+                <el-link type="primary" target="_blank"
+                         v-if="picURL && picURL.indexOf('undefined')<0 && picURL.indexOf('301')<0" :underline="false"
+                         :href="picURL">
+                  <el-image
+                      :src="picURL"
+                      style="max-height:250px;overflow: auto"
+                      fit="scale-down">
+                  </el-image>
+                </el-link>
+                <div v-else>
+                  Sorry, the model structure is unavailable.
+                </div>
+              </div>
+            </div>
+            <div>
+              <p class="title">Original Framework</p>
+              <p>{{ modelInfo["modelFramework"] }}</p>
+            </div>
+            <div>
+              <p class="title">Update Time</p>
+              <p>{{ modelInfo["updated_time"] }}</p>
+            </div>
+            <div>
+              <p class="title">Create Time</p>
+              <p>{{ modelInfo["created_time"] }}</p>
+            </div>
+            <div>
 
-            <p class="title" style="margin-bottom: 5px">Other Details</p>
-            <p v-if='modelInfo["howToRunAndDetails"]==""||modelInfo["howToRunAndDetails"]=="\n"'>No other details</p>
+              <p class="title" style="margin-bottom: 5px">Other Details</p>
+              <p v-if='modelInfo["howToRunAndDetails"]==""||modelInfo["howToRunAndDetails"]=="\n"'>No other
+                details</p>
+            </div>
+            <div>
+
+            </div>
+            <div id="preview" style="padding-left:0"></div>
+            <!--          <div id="outline"></div>-->
           </div>
-          <div>
+
+        </el-tab-pane>
+        <el-tab-pane label="Discussions">
+          <h2 style="text-align: center">Discussions</h2>
+          <div class="content">
+            <search-box :params="searchParams" @get-data="getDiscussions" ref="searchBox" classes="center_layout">
+              <el-table ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)"
+                        border stripe class="center_layout">
+                <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>
+                <el-table-column :sortable="'custom'" header-align="center" align="center" label="Title" prop="title">
+                  <template v-slot="scope">
+                    <el-link type="primary" :underline="false" target="_blank" style="float:left;font-size:1.1em"
+                             :href="'Discussion/'+scope.row['_id']['$oid']">
+                      {{ scope.row.title }}
+                    </el-link>
+                  </template>
+                </el-table-column>
+                <el-table-column :sortable="'custom'" header-align="center" align="center" label="Author"
+                                 prop="nickname" width="200px"></el-table-column>
+                <el-table-column :sortable="'custom'" header-align="center" align="center" label="Update Time"
+                                 prop="update_time"
+                                 width="160px"></el-table-column>
+                <el-table-column :sortable="'custom'" header-align="center" align="center" label="Create Time"
+                                 prop="create_time"
+                                 width="160px"></el-table-column>
+              </el-table>
+            </search-box>
+            <div class="center_layout">
+              <el-button type="primary" @click="dialogFormVisibleTopic=true" style="float:left;margin-top: 20px">New
+                Topic
+              </el-button>
+            </div>
 
           </div>
-          <div id="preview" style="padding-left:0"></div>
-<!--          <div id="outline"></div>-->
-        </div>
+        </el-tab-pane>
+      </el-tabs>
 
-        <div style="text-align: center;margin-top: 15px">
-
-        </div>
-      </el-col>
-<!--      <el-col :span="6"></el-col>-->
     </el-row>
   </el-card>
   <el-dialog title="Buy Model" v-model="dialogFormVisible" @open="getUserInfo">
@@ -110,7 +147,30 @@
     </span>
     </template>
   </el-dialog>
+  <el-dialog title="New Topic" v-model="dialogFormVisibleTopic" @opened="newTopic">
+    <div v-if="$store.state.userInfo.role!='guest'">
+      <el-form :model="topic">
+        <el-form-item label="Title">
+          <el-input v-model="topic.title" autocomplete="off" style="color:black"></el-input>
+        </el-form-item>
+        <el-form-item label="Content">
+          <div>
+            <div id="editor" style="padding-left:0"></div>
+          </div>
 
+        </el-form-item>
+      </el-form>
+    </div>
+    <div v-else>If you want to open a new topic, please <a href="../login" style="text-decoration: none">login</a>
+      first.
+    </div>
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" v-if="$store.state.userInfo.role!='guest'" @click="addTopic">Submit</el-button>
+      <el-button @click="dialogFormVisibleTopic = false">Cancel</el-button>
+    </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -119,38 +179,6 @@ import Vditor from "vditor";
 
 import "vditor/src/assets/scss/index.scss";
 
-const initOutline = () => {
-  const headingElements = []
-  Array.from(document.getElementById('preview').children).forEach((item) => {
-    if (item.tagName.length === 2 && item.tagName !== 'HR' && item.tagName.indexOf('H') === 0) {
-      headingElements.push(item)
-    }
-  })
-
-  let toc = []
-  window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY
-    toc = []
-    headingElements.forEach((item) => {
-      toc.push({
-        id: item.id,
-        offsetTop: item.offsetTop,
-      })
-    })
-
-    const currentElement = document.querySelector('.vditor-outline__item--current')
-    for (let i = 0, iMax = toc.length; i < iMax; i++) {
-      if (scrollTop < toc[i].offsetTop - 30) {
-        if (currentElement) {
-          currentElement.classList.remove('vditor-outline__item--current')
-        }
-        let index = i > 0 ? i - 1 : 0
-        document.querySelector('span[data-target-id="' + toc[index].id + '"]').classList.add('vditor-outline__item--current')
-        break
-      }
-    }
-  })
-}
 let mkd = markdown => {
   Vditor.preview(document.getElementById('preview'),
       markdown, {
@@ -158,15 +186,9 @@ let mkd = markdown => {
           enable: true,
         },
         anchor: 1,
-        after () {
+        after() {
           if (window.innerWidth <= 768) {
             return
-          }
-          const outlineElement = document.getElementById('outline')
-          Vditor.outlineRender(document.getElementById('preview'), outlineElement)
-          if (outlineElement.innerText.trim() !== '') {
-            outlineElement.style.display = 'block'
-            initOutline()
           }
         },
       })
@@ -179,6 +201,53 @@ export default {
     await this.getModel();
   },
   methods: {
+    newTopic: function () {
+      if (this.$store.state.userInfo.role != 'guest' && this.firstOpen) {
+        this.firstOpen = false;
+        this.markdownEditor = new Vditor('editor', {
+          height: 360,
+          toolbarConfig: {
+            pin: true,
+          },
+          cache: {
+            enable: false,
+          },
+          mode: 'sv',
+          preview: {
+            actions: [],
+          },
+          upload: {
+            url: process.env.VUE_APP_BACKEND_URL + 'uploadFile',
+            withCredentials: true, //不要忘了带cookie
+            multiple: false,
+            success: (editor, msg) => {
+              let filename = JSON.parse(msg)["filename"];
+              let filetype = JSON.parse(msg)["file_type"];
+              if (filetype == 'image') {
+                this.markdownEditor.insertValue(`![Title](${this.staticURL}/descFiles/${filename})`, false);
+              } else {
+                this.markdownEditor.insertValue(`[${filename}](${this.staticURL}/descFiles/${filename})`, false);
+              }
+            },
+          },
+        });
+      }
+    },
+    getDiscussions: function (data) {
+      this.searchData = data;
+    },
+    addTopic: async function(){
+      let content = this.markdownEditor.getValue();
+      let info = {
+        modelID: this.$route.params.id,
+        title: this.topic.title,
+        content: content,
+      }
+      let msg = await this.$axios.post('addTopic', info);
+      if(msg){
+        await this.$router.push('Discussion/'+msg["id"]);
+      }
+    },
     getModel: async function () {
       let modelInfo = await this.$axios.get("queryModel", {
         params: {
@@ -188,7 +257,6 @@ export default {
       this.modelInfo = modelInfo.data;
       this.picURL = this.staticURL + 'pics/' + modelInfo.data["structurePic"];
       this.tag = modelInfo.data['tags'].length > 0;
-      console.log(this.modelInfo)
       mkd(modelInfo.data.howToRunAndDetails);
       //Show the purchase dialogue
       if (this.$route.query["buy"] == "true") {
@@ -224,48 +292,101 @@ export default {
   },
   data() {
     return {
+      firstOpen: true,
       modelInfo: {},
       dialogFormVisible: false,
+      dialogFormVisibleTopic: false,
       clickToSee: this.staticURL + 'pics/click.png',
       userInfo: {
         "deposit": 0,
       },
-      picURL:"",
+      topic: {
+        modelID: this.$route.params.id,
+        title: "",
+      },
+      picURL: "",
       tag: false,
       form: {
         id: 0,
         price: 0,
-      }
+      },
+      searchData: [],
+      searchParams: {
+        queryFields: [
+          {
+            label: 'Title',
+            value: 'title',
+            type: 'text',
+            comment: '',
+          },
+          {
+            label: 'Author',
+            value: 'nickname',
+            type: 'text',
+            comment: '',
+          },
+          {
+            label: 'Update Time',
+            value: 'update_time',
+            type: 'datetime',
+            comment: '(Must specify time, not only date)',
+          }, {
+            label: 'Create Time',
+            value: 'create_time',
+            type: 'datetime',
+            comment: '(Must specify time, not only date)',
+          },
+        ],
+        apiAddress: 'queryDiscussions',
+        sortProp: "update_time",
+        defaultSearchProp: "title",
+        additionalConditions: {
+          modelID: this.$route.params.id,
+        },
+      },
     };
   },
 }
 </script>
 
 <style scoped>
-.content{
-  min-width: 900px;
-  margin: 0 auto;
-  max-width: 1400px;
+.content {
+  min-width: 700px;
+  margin: 0 auto 0 20px;
+  /*max-width: 1400px;*/
   font-size: 18px;
 }
 
-tr td:first-child{
+tr td:first-child {
   text-align: right;
   font-weight: bold;
   vertical-align: text-top;
-  width:50%
+  width: 50%
 }
 
 td {
   padding-top: 10px;
   padding-left: 5px;
 }
-.title{
+
+.title {
   font-weight: bold;
-  margin-top:20px;
-  margin-bottom:-10px;
+  margin-top: 20px;
+  margin-bottom: -10px;
 }
-p{
+
+p {
   line-height: 20px;
+}
+
+:deep(.el-tabs--left) {
+  width: 100%
+}
+:deep(.el-form-item) {
+  text-align: left !important;
+}
+:deep(.el-form-item__label) {
+
+  float: initial !important;
 }
 </style>

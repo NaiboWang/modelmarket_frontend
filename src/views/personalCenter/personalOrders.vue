@@ -113,7 +113,7 @@ export default {
           },
           {
             label: 'Update Time',
-            comment: ' (must specify time, not only date)',
+            comment: ' (Must specify time, not only date)',
             value: 'updated_time',
             type: 'datetime',
           },
@@ -188,7 +188,7 @@ export default {
           label: 'Purchased Time',
           value: 'purchased_time',
           type: 'datetime',
-          comment: ' (must specify time, not only date)',
+          comment: ' (Must specify time, not only date)',
         },
       ];
       if (this.$route.path == "/soldOrders" || this.$store.state.userInfo.role == 'manager') {

@@ -1,5 +1,5 @@
 <template>
-  <el-row class="center_layout">
+  <el-row :class="classes">
     <el-col :span="6" style="margin-right:10px">
       <el-select style="width: 100%" v-model="searchDict.fields" @change="detectChange" multiple
                  placeholder="Please choose query fields">
@@ -41,7 +41,7 @@
   ></el-pagination>
   <el-dialog title="Advanced Search" v-model="dialogFormVisible">
     <el-form>
-      <el-form-item v-for="queryField in searchDict.queryFields" :label="queryField.label+queryField.comment"
+      <el-form-item v-for="queryField in searchDict.queryFields" :label="queryField.label+' '+queryField.comment"
                     :key="queryField.label"
                     prop="queryField.value">
 
@@ -126,6 +126,9 @@ export default {
   name: "SearchBox",
   emits:['getData'], //标记事件名称
   async mounted() {
+    if("additionalConditions" in this.params){
+      this.searchDict.queryInfo.additionalConditions = JSON.stringify(this.params.additionalConditions);
+    }
     this.searchDict.queryFields = this.params.queryFields;
     for (let item of this.searchDict.queryFields) {
       if (item.type == 'number' || item.type == 'datetime') {
@@ -147,7 +150,9 @@ export default {
     pageSize: {
       default: 10,
     },
-
+    classes:{
+      default: "",
+    },
   },
   data() {
     return {
@@ -162,6 +167,7 @@ export default {
           order: -1,
           advance: 0,
           multiConditions: {},
+          additionalConditions:{},
         },
         queryFields: [],
         total: 0,
@@ -239,7 +245,7 @@ export default {
   text-align: left;
 }
 
-/deep/ .el-form-item__label {
+:deep(.el-form-item__label) {
   text-align: left !important;
   float: initial !important;
 }

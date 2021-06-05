@@ -5,8 +5,8 @@
     <el-breadcrumb-item>User Management</el-breadcrumb-item>
   </el-breadcrumb>
   <el-card>
-    <search-box :params="searchParams" @get-data="(data) => searchData = data" ref="searchBox">
-      <el-table ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)" border stripe class="left_layout">
+    {{notifications}}
+      <el-table ref="tableRef" :data="notifications"  border stripe class="left_layout">
         <el-table-column header-align="center" :sortable="'custom'" align="center" label="ID" type="index"></el-table-column>
         <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Username" prop="username"></el-table-column>
         <el-table-column header-align="center"  :sortable="'custom'" align="center" label="Nickname" prop="nickname"></el-table-column>
@@ -45,70 +45,33 @@
           </template>
         </el-table-column>
       </el-table>
-    </search-box>
     <!-- 表格数据 -->
-
+    <el-pagination
+        layout="prev, pager, next"
+        :total="total">
+    </el-pagination>
   </el-card>
 </template>
 
 <script>
 export default {
-  name: "userList",
+  name: "notificationList",
+  async created(){
+    let notifications = await this.$axios.get("queryNotifications", {
+      params: {
+        "pageNum": 1,
+      }
+    });
+    this.notifications = notifications;
+  },
   data() {
     return {
-      searchData: [],
-      searchParams: {
-        queryFields: [
-          {
-            label: 'User Name',
-            value: 'username',
-            comment: "",
-            type:"text",
-          },
-          {
-            label: 'Nick Name',
-            value: 'nickname',
-            comment: "",
-            type:"text",
-          },
-          {
-            label: 'Role',
-            value: 'Role',
-            comment: "",
-            type:"text",
-          },
-          {
-            label: 'Register Time',
-            value: 'register_time',
-            comment: ' (Must specify time, not only date)',
-            type:"datetime",
-          },
-        ],
-        apiAddress: 'getUserList',
-        sortProp: "id",
-        defaultSearchProp: "username",
-      },
+      notifications:[],
+      total:0,
     };
   },
   methods: {
-    changeUserStatus: async function(row,id,status){
-      let info = await this.$axios.get("changeUserStatus",{
-        params:{
-          "id":id,
-          "status":status,
-        }
-      });
-      if(!info){
-        row.status = !status;
-      }
-    },
-    resetPassword: async function(id){
-      await this.$axios.get("resetPassword",{
-        params:{
-          "id":id,
-        }
-      });
-    },
+
   },
 }
 </script>

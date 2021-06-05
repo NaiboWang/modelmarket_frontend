@@ -15,6 +15,8 @@ import viewOrder from "@/views/personalCenter/viewOrder";
 import viewWaitingList from "@/views/personalCenter/viewWaitingList";
 import userList from "../views/personalCenter/userList";
 import logList from "../views/personalCenter/logList";
+import discussion from "@/views/home/discussion";
+import notifications from "@/views/personalCenter/notifications";
 
 const routes = [
     {
@@ -25,6 +27,7 @@ const routes = [
         children: [
             {path: '/modelList', component: modelList},
             {path: '/viewModel/:id', component: viewModel},
+            {path: '/viewModel/Discussion/:id', component: discussion},
         ]
     },
     {
@@ -59,6 +62,7 @@ const routes = [
             {path: '/viewWaitingList', component: viewWaitingList},
             {path: '/charge', component: charge},
             {path: '/userManagement', component: userList},
+            {path: '/notifications', component: notifications},
         ]
     },
     // {

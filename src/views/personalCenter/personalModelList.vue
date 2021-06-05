@@ -137,7 +137,7 @@ export default {
           },
           {
             label: 'Update Time',
-            comment: ' (must specify time, not only date)',
+            comment: ' (Must specify time, not only date)',
             value: 'updated_time',
             type: 'datetime',
           },

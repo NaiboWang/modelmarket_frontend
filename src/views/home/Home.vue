@@ -4,10 +4,13 @@
       <div>
         <router-link to="/"><img class="logo" src="../../assets/logo.jpg" alt /></router-link>
         <span>Machine Learning Model Market</span>
-
       </div>
       <div class="personalInfo" v-if="$store.state.userInfo.role !='guest'" >
         <span>Hello, {{$store.state.userInfo.nickname}}!</span>
+        <div style="margin-right:20px">
+          <el-button type="info" @click="$router.push('/notifications')" v-if="$store.state.userInfo.notifications==0" icon="el-icon-bell" circle></el-button>
+          <el-button type="danger" @click="$router.push('/notifications')" style="width: 40px;height: 40px" v-else circle>{{$store.state.userInfo.notifications}}</el-button>
+        </div>
         <el-button type="primary" @click="$router.push('/personalHome')">{{$store.state.userInfo.role =='manager'?'Management Center':'Personal Center'}}</el-button>
         <el-button  @click="logout">Logout</el-button>
       </div>
