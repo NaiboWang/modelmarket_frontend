@@ -122,6 +122,8 @@
 // </el-table-column>
 // </el-table>
 // </search-box>
+import {convert_time} from "@/utils/time";
+
 export default {
   name: "SearchBox",
   emits:['getData'], //标记事件名称
@@ -232,6 +234,7 @@ export default {
       }
       queryInfo.fields = JSON.stringify(queryInfo.fields);
       let data = await this.$axios.post(this.params.apiAddress, queryInfo);
+      convert_time(data);
       this.searchDict.total = data.total;
       this.dialogFormVisible = false;
       this.$emit("getData",data.data);

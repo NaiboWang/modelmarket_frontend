@@ -16,8 +16,10 @@
         </el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="Author"
                          prop="author"></el-table-column>
-        <el-table-column :sortable="'custom'" header-align="center" align="center" label="FrameWork"
-                         prop="modelFramework"
+<!--        <el-table-column :sortable="'custom'" header-align="center" align="center" label="FrameWork"-->
+<!--                         prop="modelFramework"-->
+<!--                         width="130px"></el-table-column>-->
+        <el-table-column :sortable="'custom'" header-align="center" align="center" label="Likes" prop="likes"
                          width="130px"></el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="Price" prop="price"
                          width="130px"></el-table-column>
@@ -66,39 +68,40 @@ export default {
             type: 'text',
             comment: '',
           },
-          {
-            label: 'Author',
-            value: 'nickname',
-            type: 'text',
-            comment: '',
-          },
-          {
-            label: 'Framework',
-            value: 'modelFramework',
-            type: 'text',
-            comment: '',
-          },
-          {
-            label: 'Price',
-            value: 'price',
-            type: 'number',
-            comment: '',
-          },
-          {
-            label: 'Tag',
-            value: 'tags',
-            type: 'text',
-            comment: '',
-          },
-          {
-            label: 'Update Time',
-            comment: ' (Must specify time, not only date)',
-            value: 'updated_time',
-            type: 'datetime',
-          },
+          // {
+          //   label: 'Author',
+          //   value: 'nickname',
+          //   type: 'text',
+          //   comment: '',
+          // },
+          // {
+          //   label: 'Framework',
+          //   value: 'modelFramework',
+          //   type: 'text',
+          //   comment: '',
+          // },
+          // {
+          //   label: 'Price',
+          //   value: 'price',
+          //   type: 'number',
+          //   comment: '',
+          // },
+          // {
+          //   label: 'Tag',
+          //   value: 'tags',
+          //   type: 'text',
+          //   comment: '',
+          // },
+          // {
+          //   label: 'Update Time',
+          //   comment: ' (Must specify time, not only date)',
+          //   value: 'updated_time',
+          //   type: 'datetime',
+          // },
         ],
         apiAddress: 'queryModels',
-        sortProp: "updated_time",
+        sortProp: "likes",
+        order:-1,
         defaultSearchProp: "modelName",
       },
     };

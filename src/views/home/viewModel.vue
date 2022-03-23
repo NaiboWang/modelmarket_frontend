@@ -17,17 +17,17 @@
             </div>
             <div>
               <p class="title">Author</p>
-              <p>{{ modelInfo["nickname"] }}</p>
+              <p>{{ modelInfo["author"] }}</p>
             </div>
             <div>
               <p class="title">Original Framework</p>
               <p>{{ modelInfo["modelFramework"] }}</p>
             </div>
-            <div>
-              <p class="title">Description</p>
-              <p>{{ modelInfo["modelDescription"] }}</p>
-              <p v-if='modelInfo["modelDescription"]==""'>No description.</p>
-            </div>
+<!--            <div>-->
+<!--              <p class="title">Description</p>-->
+<!--              <p>{{ modelInfo["modelDescription"] }}</p>-->
+<!--              <p v-if='modelInfo["modelDescription"]==""'>No description.</p>-->
+<!--            </div>-->
             <div>
               <p class="title">Tags</p>
               <div>
@@ -71,7 +71,7 @@
             </div>
             <div>
               <p class="title">Update Time</p>
-              <p>{{ modelInfo["updated_time"] }}</p>
+              <p>{{modelInfo["updated_time"] }}</p>
             </div>
             <div>
               <p class="title">Create Time</p>
@@ -79,7 +79,7 @@
             </div>
             <div>
 
-              <p class="title" style="margin-bottom: 5px">Other Details</p>
+              <p class="title" style="margin-bottom: 5px">Descriptions</p>
               <p v-if='modelInfo["howToRunAndDetails"]==""||modelInfo["howToRunAndDetails"]=="\n"'>No other
                 details</p>
             </div>
@@ -91,6 +91,39 @@
           </div>
 
         </el-tab-pane>
+        <el-tab-pane label="Files">
+          <h2 style="text-align: center">File List</h2>
+          <div class="content">
+            <el-table ref="tableFileRef" :data="fileList" stripe class="center_layout">
+              <!--                <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>-->
+              <el-table-column header-align="left" align="left" label="File Name" prop="name">
+                <template v-slot="scope">
+                  <el-link type="primary" :underline="false" icon="el-icon-document" target="_blank"
+                           style="float:left;font-size:1.15em;" class="file_style"
+                           :href="$rootURL+'model_files/'+scope.row['location']">
+                    <span :style="{'font-weight':scope.row.name==maxFileName?'600':'200'}">{{ scope.row.name }}</span>
+                  </el-link>
+
+                </template>
+              </el-table-column>
+              <el-table-column header-align="left" align="left" label="Size"
+                               prop="size" width="300px">
+                <template v-slot="scope">
+                  <span
+                      :style="{'font-weight':scope.row.name==maxFileName?'600':'200'}">{{ renderSize(scope.row['size']) }}</span>
+                </template>
+
+              </el-table-column>
+              <el-table-column header-align="left" align="left" label="Update Time"
+                               prop="mtime"
+                               width="360px"></el-table-column>
+
+            </el-table>
+
+
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane label="Discussions">
           <h2 style="text-align: center">Discussions</h2>
           <div class="content">
@@ -124,6 +157,7 @@
 
           </div>
         </el-tab-pane>
+
       </el-tabs>
 
     </el-row>
@@ -178,6 +212,7 @@
 import Vditor from "vditor";
 
 import "vditor/src/assets/scss/index.scss";
+import {convert_time} from "@/utils/time";
 
 let mkd = markdown => {
   Vditor.preview(document.getElementById('preview'),
@@ -236,7 +271,7 @@ export default {
     getDiscussions: function (data) {
       this.searchData = data;
     },
-    addTopic: async function(){
+    addTopic: async function () {
       let content = this.markdownEditor.getValue();
       let info = {
         modelID: this.$route.params.id,
@@ -244,8 +279,8 @@ export default {
         content: content,
       }
       let msg = await this.$axios.post('addTopic', info);
-      if(msg){
-        await this.$router.push('Discussion/'+msg["id"]);
+      if (msg) {
+        await this.$router.push('Discussion/' + msg["id"]);
       }
     },
     getModel: async function () {
@@ -255,6 +290,10 @@ export default {
         }
       });
       this.modelInfo = modelInfo.data;
+      convert_time(this.modelInfo);
+      this.fileList = modelInfo.fileList;
+      convert_time(this.fileList);
+      this.maxFileName = this.fileList.reduce((p, v) => p.size < v.size ? v : p).name;
       this.picURL = this.staticURL + 'pics/' + modelInfo.data["structurePic"];
       this.tag = modelInfo.data['tags'].length > 0;
       mkd(modelInfo.data.howToRunAndDetails);
@@ -262,6 +301,18 @@ export default {
       if (this.$route.query["buy"] == "true") {
         this.dialogFormVisible = true;
       }
+    },
+    renderSize: function (value) {
+      if (null == value || value == '') {
+        return "0 Bytes";
+      }
+      var unitArr = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+      var index = 0;
+      var srcsize = parseFloat(value);
+      index = Math.floor(Math.log(srcsize) / Math.log(1024));
+      var size = srcsize / Math.pow(1024, index);
+      size = size.toFixed(2);//保留的小数位数
+      return size + " " + unitArr[index];
     },
     getUserInfo: async function () {
       let userInfo = await this.$axios.get("getUserInfo");
@@ -311,6 +362,8 @@ export default {
         price: 0,
       },
       searchData: [],
+      fileList: [],
+      maxFileName: "",
       searchParams: {
         queryFields: [
           {
@@ -382,9 +435,19 @@ p {
 :deep(.el-tabs--left) {
   width: 100%
 }
+
+.file_style {
+  color: black !important;
+}
+
+.file_style:hover {
+  color: dodgerblue !important;
+}
+
 :deep(.el-form-item) {
   text-align: left !important;
 }
+
 :deep(.el-form-item__label) {
 
   float: initial !important;
