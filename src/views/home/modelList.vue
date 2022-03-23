@@ -8,9 +8,14 @@
       <el-table ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)" border stripe class="center_layout">
         <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="Name"
-                         prop="modelName"></el-table-column>
+                         prop="modelName">
+          <template v-slot="scope">
+            <a target="_blank" :href="'/viewModel/'+scope.row.id" style="text-decoration: none;font-size: 15px">{{scope.row.modelName}}</a>
+          </template>
+
+        </el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="Author"
-                         prop="nickname"></el-table-column>
+                         prop="author"></el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="FrameWork"
                          prop="modelFramework"
                          width="130px"></el-table-column>
@@ -18,16 +23,16 @@
                          width="130px"></el-table-column>
         <el-table-column :sortable="'custom'" header-align="center" align="center" label="Update Time"
                          prop="updated_time"
-                         width="160px"></el-table-column>
-        <el-table-column header-align="center" align="center" label="Tags">
-          <template v-slot="scope">
-            <el-tag
-                v-for="(item, i) in scope.row.tags"
-                :key="i"
-            >{{ item }}
-            </el-tag>
-          </template>
-        </el-table-column>
+                         width="220px"></el-table-column>
+<!--        <el-table-column header-align="center" align="center" label="Tags">-->
+<!--          <template v-slot="scope">-->
+<!--            <el-tag-->
+<!--                v-for="(item, i) in scope.row.tags"-->
+<!--                :key="i"-->
+<!--            >{{ item }}-->
+<!--            </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column header-align="center" align="center" label="Operations" width="280px">
           <template v-slot="scope">
             <el-button type="primary" icon="el-icon-view" size="medium"
