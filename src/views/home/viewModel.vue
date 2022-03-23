@@ -94,9 +94,9 @@
         <el-tab-pane label="Files">
           <h2 style="text-align: center">File List</h2>
           <div class="content">
-            <el-table ref="tableFileRef" :data="fileList" stripe class="center_layout">
+            <el-table ref="tableFileRef" :data="fileList" stripe >
               <!--                <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>-->
-              <el-table-column header-align="left" align="left" label="File Name" prop="name">
+              <el-table-column header-align="left" align="left" label="File Name" prop="name" min-width="400px">
                 <template v-slot="scope">
                   <el-link type="primary" :underline="false" :icon="scope.row['type']=='file'?'el-icon-document':'el-icon-folder'" target="_blank"
                            style="float:left;font-size:1.15em;" class="file_style"
@@ -107,7 +107,7 @@
                 </template>
               </el-table-column>
               <el-table-column header-align="left" align="left" label="Size"
-                               prop="size" width="300px">
+                               prop="size" min-width="200px">
                 <template v-slot="scope">
                   <span
                       :style="{'font-weight':scope.row.name==maxFileName?'600':'200'}">{{ renderSize(scope.row['size']) }}</span>
@@ -116,7 +116,7 @@
               </el-table-column>
               <el-table-column header-align="left" align="left" label="Update Time"
                                prop="mtime"
-                               width="360px"></el-table-column>
+                               min-width="360px" ></el-table-column>
 
             </el-table>
 
