@@ -9,7 +9,7 @@
       <el-tabs tab-position="left">
         <el-tab-pane label="Model Information" style="text-align: left">
 
-          <h2 style="text-align: center">Model Details</h2>
+          <h2 style="text-align: center">Model Information</h2>
           <div class="content">
             <div>
               <p class="title">Model Name</p>
@@ -98,7 +98,7 @@
               <!--                <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>-->
               <el-table-column header-align="left" align="left" label="File Name" prop="name">
                 <template v-slot="scope">
-                  <el-link type="primary" :underline="false" icon="el-icon-document" target="_blank"
+                  <el-link type="primary" :underline="false" :icon="scope.row['type']=='file'?'el-icon-document':'el-icon-folder'" target="_blank"
                            style="float:left;font-size:1.15em;" class="file_style"
                            :href="$rootURL+'model_files/'+scope.row['location']">
                     <span :style="{'font-weight':scope.row.name==maxFileName?'600':'200'}">{{ scope.row.name }}</span>
@@ -124,16 +124,16 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="Discussions">
-          <h2 style="text-align: center">Discussions</h2>
+        <el-tab-pane label="Issues/Discussions">
+          <h2 style="text-align: center">Issues/Discussions</h2>
           <div class="content">
             <search-box :params="searchParams" @get-data="getDiscussions" ref="searchBox" classes="center_layout">
-              <el-table ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)"
+              <el-table empty-text="No Issues/Discussions" ref="tableRef" :data="searchData" @sort-change="(column) => $refs.searchBox.sortData(column)"
                         border stripe class="center_layout">
                 <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>
                 <el-table-column :sortable="'custom'" header-align="center" align="center" label="Title" prop="title">
                   <template v-slot="scope">
-                    <el-link type="primary" :underline="false" target="_blank" style="float:left;font-size:1.1em"
+                    <el-link type="primary" :underline="false" target="_blank" class="discussion_title" style="float:left;"
                              :href="'Discussion/'+scope.row['_id']['$oid']">
                       {{ scope.row.title }}
                     </el-link>
@@ -150,8 +150,7 @@
               </el-table>
             </search-box>
             <div class="center_layout">
-              <el-button type="primary" @click="dialogFormVisibleTopic=true" style="float:left;margin-top: 20px">New
-                Topic
+              <el-button type="primary" @click="dialogFormVisibleTopic=true" style="float:left;margin-top: 20px">New Issue/Discussion
               </el-button>
             </div>
 
@@ -403,6 +402,16 @@ export default {
 </script>
 
 <style scoped>
+.discussion_title{
+  color:black!important;
+  font-weight: 600;
+  font-size:1.2em;
+  text-align: left;
+}
+.discussion_title:hover{
+  color:dodgerblue!important;
+
+}
 .content {
   min-width: 700px;
   margin: 0 auto 0 20px;
@@ -435,7 +444,10 @@ p {
 :deep(.el-tabs--left) {
   width: 100%
 }
+:deep(.el-tabs__item){
+font-size:1em
 
+}
 .file_style {
   color: black !important;
 }

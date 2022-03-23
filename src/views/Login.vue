@@ -42,8 +42,8 @@ export default {
   data () {
     return {
       loginForm: {
-        username: 'provider',
-        pass: 'qq',
+        username: '',
+        pass: '',
       },
       // 表单验证
       loginFormRules: {

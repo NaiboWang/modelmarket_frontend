@@ -9,7 +9,7 @@ function convert_time(o) {
         // console.log(i,o[i])
         // eslint-disable-next-line no-prototype-builtins
         if (i.indexOf("time")>=0) {
-            console.log(o[i])
+            // console.log(o[i])
             o[i] = new Date(o[i]);
             let format = timezone<0?("-"+timezone):('+'+timezone)
             o[i] = moment(+o[i]).utcOffset(timezone).format('YYYY-MM-DD HH:mm:ss UTC'+format);
