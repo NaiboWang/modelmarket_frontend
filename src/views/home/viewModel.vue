@@ -94,7 +94,7 @@
         <el-tab-pane label="Files">
           <h2 style="text-align: center">File List</h2>
           <div class="content">
-            <el-table ref="tableFileRef" :data="fileList" stripe >
+            <el-table ref="tableFileRef" empty-text="No files" :data="fileList" stripe >
               <!--                <el-table-column header-align="center" align="center" label="ID" type="index"></el-table-column>-->
               <el-table-column header-align="left" align="left" label="File Name" prop="name" min-width="400px">
                 <template v-slot="scope">
