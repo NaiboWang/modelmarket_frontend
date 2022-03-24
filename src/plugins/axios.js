@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import router from '../router'
 // import qs from 'qs';
 // import store from '@/store';
@@ -21,10 +21,9 @@ service.interceptors.request.use(
     config => {
         NProgress.start();
         //针对django框架设计的专属post方法
-        if(config.method == "post")
-        {
+        if (config.method == "post") {
             let param = new URLSearchParams();
-            for (let key in config.data){
+            for (let key in config.data) {
                 param.append(key, config.data[key]);
             }
             config.data = param;
@@ -54,17 +53,24 @@ service.interceptors.response.use(
     response => {
         NProgress.done();
         if (response.data.status != 200) {
-            ElMessage({
-                message: response.data.msg,
-                type: 'error',
-                center: true
-            });
-            if(response.data.status == 302){
-                store.commit("setBackRef",window.location.pathname);
+            if (response.data.status != 302) {
+                ElMessage({
+                    message: response.data.msg,
+                    type: 'error',
+                    center: true
+                });
+            }
+            if (response.data.status == 302) {
+                store.commit("setBackRef", window.location.pathname);
+                ElMessage({
+                    message: "Please login",
+                    type: 'info',
+                    center: true
+                });
                 router.push("/login"); //When not logged in, return to home page.
             }
             return false;
-        } else if('msg' in response.data){
+        } else if ('msg' in response.data) {
             ElMessage({
                 message: response.data.msg,
                 type: 'success',
